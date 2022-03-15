@@ -19,11 +19,16 @@ const createDom = (vdom) => {
     return document.createTextNode(vdom);
   }
   const {
-    type,
+    type, // 字符串/组件
     props,
     props: { children },
   } = vdom;
-  const dom = document.createElement(type);
+  let dom;
+  if (typeof type === "function") {
+    return updateFunctionalComponent(vdom);
+  } else {
+    dom = document.createElement(type);
+  }
   updateProperties(dom, props);
   if (typeof children === "string" || typeof children === "number") {
     // 儿子是字符串或者数字
@@ -67,6 +72,17 @@ const updateProperties = (dom, props) => {
  */
 const reconcileChildren = (children, dom) => {
   children.forEach((child) => render(child, dom));
+};
+
+/**
+ * 接收函数组件，生成真实要渲染的VDOM
+ * @param {*} vdom
+ * @returns
+ */
+const updateFunctionalComponent = (vdom) => {
+  const { type, props } = vdom;
+  const renderVdom = type(props);
+  return createDom(renderVdom);
 };
 
 const ReactDom = {

@@ -22,7 +22,7 @@
 //   }
 
 /**
- * @param {*} type dom元素类型
+ * @param {*} type dom元素类型 字符串（dom元素 ）/组件
  * @param {*} config 属性对象
  * @param  {...any} children
  */
