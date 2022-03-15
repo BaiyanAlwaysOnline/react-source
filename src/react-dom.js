@@ -54,6 +54,8 @@ const updateProperties = (dom, props) => {
       for (const prop in styleObj) {
         dom.style[prop] = styleObj[prop];
       }
+    } else {
+      dom[key] = props[key];
     }
   }
 };
