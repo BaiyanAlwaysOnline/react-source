@@ -11,6 +11,7 @@ const render = (vdom, container) => {
 /**
  * 虚拟DOM => 真实DOM
  * @param {*} vdom
+ * @return dom
  */
 const createDom = (vdom) => {
   if (!vdom) return "";
@@ -19,13 +20,19 @@ const createDom = (vdom) => {
     return document.createTextNode(vdom);
   }
   const {
-    type, // 字符串/组件
+    type, // ! 字符串/函数组件/类组件
     props,
     props: { children },
   } = vdom;
   let dom;
   if (typeof type === "function") {
-    return updateFunctionalComponent(vdom);
+    if (type.isReactComponent) {
+      // 是类组件 => babel编译完class就是一个function
+      return updateClassComponent(vdom);
+    } else {
+      // 是函数组件
+      return updateFunctionalComponent(vdom);
+    }
   } else {
     dom = document.createElement(type);
   }
@@ -75,13 +82,26 @@ const reconcileChildren = (children, dom) => {
 };
 
 /**
+ * 接收类组件，生成真实要渲染的VDOM
+ * @param {*} vdom
+ * @returns dom
+ */
+const updateClassComponent = (vdom) => {
+  const { type: ClassComponent, props } = vdom;
+  const componentInstance = new ClassComponent(props);
+  const renderVdom = componentInstance.render();
+  const dom = createDom(renderVdom);
+  return dom;
+};
+
+/**
  * 接收函数组件，生成真实要渲染的VDOM
  * @param {*} vdom
- * @returns
+ * @returns dom
  */
 const updateFunctionalComponent = (vdom) => {
-  const { type, props } = vdom;
-  const renderVdom = type(props);
+  const { type: functionalComponent, props } = vdom;
+  const renderVdom = functionalComponent(props);
   return createDom(renderVdom);
 };
 

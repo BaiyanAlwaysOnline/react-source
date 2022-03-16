@@ -42,7 +42,21 @@ export const createElement = (type, config, ...children) => {
   };
 };
 
+class Component {
+  // 说明是一个React组件
+  static isReactComponent = true;
+  constructor(props) {
+    this.props = props;
+  }
+
+  render() {
+    console.error("组件必须实现render方法");
+  }
+}
+
 const React = {
   createElement,
+  Component,
 };
+
 export default React;
