@@ -13,7 +13,7 @@ const render = (vdom, container) => {
  * @param {*} vdom
  * @return dom
  */
-const createDom = (vdom) => {
+export const createDom = (vdom) => {
   if (!vdom) return "";
   // 数字或者字符串 => 文本节点
   if (typeof vdom === "string" || typeof vdom === "number") {
@@ -66,6 +66,8 @@ const updateProperties = (dom, props) => {
       for (const prop in styleObj) {
         dom.style[prop] = styleObj[prop];
       }
+    } else if (key.startsWith("on")) {
+      dom[key.toLocaleLowerCase()] = props[key];
     } else {
       dom[key] = props[key];
     }
@@ -91,6 +93,7 @@ const updateClassComponent = (vdom) => {
   const componentInstance = new ClassComponent(props);
   const renderVdom = componentInstance.render();
   const dom = createDom(renderVdom);
+  componentInstance._dom = dom;
   return dom;
 };
 
