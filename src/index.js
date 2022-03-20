@@ -1,4 +1,4 @@
-import ReactDOM from "./react-dom";
+import ReactDOM from "react-dom";
 // import Welcome from "./components/class-component";
 import Tick from "./components/setState";
 

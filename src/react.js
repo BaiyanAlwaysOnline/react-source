@@ -47,17 +47,18 @@ export const createElement = (type, config, ...children) => {
 /**
  * @desc 单例，React所有组件公用
  */
-const updaterQueue = {
-  updaters: [], // 待更新的更新器队列
+export const updaterQueue = {
+  updaters: new Set(), // 待更新的更新器队列
   isBatchingUpdate: false, // 是否正在批量更新
-  add: (updater) => {
-    this.updaters.push(updater);
+  add(updater) {
+    this.updaters.add(updater);
   },
-  batchUpdate: () => {
+  batchUpdate() {
     this.updaters.forEach((updater) => {
       updater.updateComponent();
     });
     this.isBatchingUpdate = false;
+    this.updaters.clear();
   },
 };
 
@@ -75,7 +76,7 @@ class Updater {
     this.pendingStates.push(partialState);
     // 判断当前是否正在批量更新中（异步）
     updaterQueue.isBatchingUpdate
-      ? updaterQueue.push(this)
+      ? updaterQueue.add(this)
       : this.updateComponent();
   }
 
@@ -98,17 +99,18 @@ class Updater {
       pendingStates,
       classInstance: { state: oldState },
     } = this;
+    let state = {};
     pendingStates.forEach((newState) => {
       if (isFunction(newState)) {
         newState = newState(oldState);
       }
-      oldState = {
+      state = {
         ...oldState, // oldState
         ...newState,
       };
     });
     pendingStates.length = 0;
-    return oldState;
+    return state;
   }
 }
 

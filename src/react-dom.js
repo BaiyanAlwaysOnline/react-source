@@ -1,3 +1,4 @@
+import { addEvent } from "./event.js";
 /**
  * 虚拟DOM => 真实DOM，然后挂载到root上
  * @param {*} vdom
@@ -67,7 +68,7 @@ const updateProperties = (dom, props) => {
         dom.style[prop] = styleObj[prop];
       }
     } else if (key.startsWith("on")) {
-      dom[key.toLocaleLowerCase()] = props[key];
+      addEvent(dom, key.toLocaleLowerCase(), props[key]);
     } else {
       dom[key] = props[key];
     }
