@@ -102,7 +102,7 @@ class Updater {
     let state = {};
     pendingStates.forEach((newState) => {
       if (isFunction(newState)) {
-        newState = newState(oldState);
+        newState = newState(state);
       }
       state = {
         ...oldState, // oldState

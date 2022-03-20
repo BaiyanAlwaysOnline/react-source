@@ -1,4 +1,4 @@
-import React from "react";
+import React from "../react";
 /**
  * 1.实现事件绑定
  * 2.组件更新
@@ -21,7 +21,6 @@ class Tick extends React.Component {
     this.setState({ date: new Date() });
   }
 
-  // 合成事件，event是经过React封装的，不是原生事件，通过事件委托到document上（React17之前，17以后委托到了root上）
   handleAdd(event) {
     // 1.每次合成事件处理函数/生命周期函数中执行setState，都会把更新好的状态存起来，待事件执行完成后统一更新
     // 2.在setTimeout等函数中执行setState是同步更新
@@ -65,7 +64,7 @@ class Tick extends React.Component {
 
   render() {
     return (
-      <div>
+      <div onClick={() => console.log("divClick")}>
         当前的时间是：
         <span>{this.state.date.toLocaleString()}</span>
         <br />
