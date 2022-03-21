@@ -24,6 +24,7 @@ export const createDom = (vdom) => {
     type, // ! 字符串/函数组件/类组件
     props,
     props: { children },
+    ref,
   } = vdom;
   let dom;
   if (typeof type === "function") {
@@ -51,6 +52,9 @@ export const createDom = (vdom) => {
     // 兜底情况，可能是null
     dom.textContent = children ? children.toString() : "";
   }
+  if (ref)
+    // 如果传了ref，ref.current => 真实Dom
+    ref.current = dom;
   return dom;
 };
 
