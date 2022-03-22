@@ -15,7 +15,6 @@ const render = (vdom, container) => {
  * @return dom
  */
 export const createDom = (vdom) => {
-  if (!vdom) return "";
   // 数字或者字符串 => 文本节点
   if (typeof vdom === "string" || typeof vdom === "number") {
     return document.createTextNode(vdom);
@@ -96,8 +95,13 @@ const reconcileChildren = (children, dom) => {
 const updateClassComponent = (vdom) => {
   const { type: ClassComponent, props } = vdom;
   const componentInstance = new ClassComponent(props);
+  if (componentInstance.componentWillMount)
+    componentInstance.componentWillMount();
   const renderVdom = componentInstance.render();
   const dom = createDom(renderVdom);
+  // TODO 先这么写
+  if (componentInstance.componentDidMount)
+    componentInstance.componentDidMount();
   componentInstance._dom = dom;
   return dom;
 };

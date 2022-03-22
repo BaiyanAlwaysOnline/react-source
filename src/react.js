@@ -37,6 +37,7 @@ export const updaterQueue = {
     this.updaters.add(updater);
   },
   batchUpdate() {
+    console.log(this.updaters.size);
     this.updaters.forEach((updater) => {
       updater.updateComponent();
     });
@@ -57,6 +58,13 @@ class Updater {
   addState(partialState) {
     // 先把setState的state放入pendingState中
     this.pendingStates.push(partialState);
+    this.emitUpdate();
+  }
+
+  /**
+   * @desc 触发更新
+   */
+  emitUpdate() {
     // 判断当前是否正在批量更新中（异步）
     updaterQueue.isBatchingUpdate
       ? updaterQueue.add(this)
@@ -69,8 +77,7 @@ class Updater {
   updateComponent() {
     const { classInstance, pendingStates } = this;
     if (pendingStates.length) {
-      classInstance.state = this.getState();
-      classInstance.forceUpdate();
+      shouldComponentUpdate(classInstance, this.getState());
     }
   }
 
@@ -129,6 +136,28 @@ const updateClassComponent = (newVdom, instance) => {
   const newDom = createDom(newVdom);
   instance._dom.parentNode.replaceChild(newDom, instance._dom);
   instance._dom = newDom;
+};
+
+/**
+ * 判断是否渲染页面
+ * @param {*} classInstance
+ * @param {*} state
+ */
+const shouldComponentUpdate = (classInstance, state) => {
+  // 不管视图是否更新，状态都要更新
+  classInstance.state = state;
+  // 如果这个生命周期返回false，视图不更新
+  if (
+    !(
+      classInstance.shouldComponentUpdate &&
+      classInstance.shouldComponentUpdate(classInstance.props, state)
+    )
+  )
+    return;
+  // 更新视图
+  if (classInstance.componentWillUpdate) classInstance.componentWillUpdate();
+  classInstance.forceUpdate();
+  if (classInstance.componentDidUpdate) classInstance.componentDidUpdate();
 };
 
 /**

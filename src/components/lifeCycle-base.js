@@ -1,4 +1,4 @@
-import React from "react";
+import React from "../react";
 
 class Counter extends React.Component {
   constructor(props) {
@@ -40,8 +40,15 @@ class Counter extends React.Component {
       <div>
         {this.state.num}
         <button onClick={this.add}>add</button>
+        <Child num={this.state.num} />
       </div>
     );
+  }
+}
+
+class Child extends React.Component {
+  render() {
+    return <h3>{this.props.num}</h3>;
   }
 }
 
