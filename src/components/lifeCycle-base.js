@@ -1,5 +1,12 @@
 import React from "../react";
 
+/**
+ * willXX 废弃
+ * componentWillMount fiber架构，组件的挂载，更新都可能会被打断/暂停，可能会导致will生命周期重复执行
+ * componentWillUpdate
+ * componentWillReceiveProps 有人会在这里面setState组件死循环渲染
+ */
+
 class Counter extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +29,9 @@ class Counter extends React.Component {
   componentWillUpdate() {
     console.log("6 componentWillUpdate");
   }
+  componentWillReceiveProps(nextProps) {
+    console.log("* componentWillReceiveProps");
+  }
   componentDidUpdate() {
     console.log("7 componentWillDidUpdate");
   }
@@ -40,15 +50,36 @@ class Counter extends React.Component {
       <div>
         {this.state.num}
         <button onClick={this.add}>add</button>
-        <Child num={this.state.num} />
+        {this.state.num === 4 ? null : <Child num={this.state.num} />}
       </div>
     );
   }
 }
 
 class Child extends React.Component {
+  componentWillMount() {
+    console.log("child1 componentWillMount");
+  }
   render() {
+    console.log("child2 render");
     return <h3>{this.props.num}</h3>;
+  }
+  componentDidMount() {
+    console.log("child3 componentDidMount");
+  }
+  // ! 组件的父组件更新，就会触发
+  componentWillReceiveProps(nextProps) {
+    console.log(Array.prototype.slice.call(arguments));
+    console.log("child4 componentWillReceiveProps");
+  }
+  componentWillUpdate() {
+    console.log("child5 componentWillUpdate");
+  }
+  componentDidUpdate() {
+    console.log("child6 componentDidUpdate");
+  }
+  componentWillUnmount() {
+    console.log("child7 componentWillUnMount");
   }
 }
 

@@ -1,4 +1,4 @@
-import { createDom } from "./react-dom";
+import { createDom, compareTwoVDom } from "./react-dom";
 import { isFunction } from "./utils.js";
 
 /**
@@ -127,16 +127,20 @@ class Component {
   }
 
   forceUpdate() {
+    if (this.componentWillUpdate) this.componentWillUpdate();
     const newVdom = this.render();
-    updateClassComponent(newVdom, this);
+    const currentDom = compareTwoVDom(
+      this.oldVdom,
+      newVdom,
+      this.dom.parentNode
+    );
+    // const newDom = createDom(currentDom);
+    // this.dom.parentNode.replaceChild(newDom, this.dom);
+    // 更新真实DOM
+    // this.dom = newDom;
+    if (this.componentDidUpdate) this.componentDidUpdate();
   }
 }
-
-const updateClassComponent = (newVdom, instance) => {
-  const newDom = createDom(newVdom);
-  instance._dom.parentNode.replaceChild(newDom, instance._dom);
-  instance._dom = newDom;
-};
 
 /**
  * 判断是否渲染页面
@@ -155,9 +159,7 @@ const shouldComponentUpdate = (classInstance, state) => {
   )
     return;
   // 更新视图
-  if (classInstance.componentWillUpdate) classInstance.componentWillUpdate();
   classInstance.forceUpdate();
-  if (classInstance.componentDidUpdate) classInstance.componentDidUpdate();
 };
 
 /**

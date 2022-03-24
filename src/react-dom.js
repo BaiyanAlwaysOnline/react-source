@@ -79,6 +79,15 @@ const updateProperties = (dom, props) => {
 };
 
 /**
+ *
+ * @param {*} oldVdom
+ * @param {*} newVdom
+ * @param {*} parentDom
+ * @return {Object} currentNode
+ */
+export const compareTwoVDom = (oldVdom, newVdom, parentNode) => {};
+
+/**
  * 挂载节点所有children
  * @param {*} children
  * @param {*} dom
@@ -95,14 +104,23 @@ const reconcileChildren = (children, dom) => {
 const updateClassComponent = (vdom) => {
   const { type: ClassComponent, props } = vdom;
   const componentInstance = new ClassComponent(props);
+  // 记录实例
+  vdom.componentInstance = componentInstance;
   if (componentInstance.componentWillMount)
     componentInstance.componentWillMount();
+  // 生成新Vdom
   const renderVdom = componentInstance.render();
+  // 根据Vdom生成真实DOM
   const dom = createDom(renderVdom);
+  // ? 这里没看懂要干什么用
+  vdom.dom = renderVdom.dom = dom;
   // TODO 先这么写
   if (componentInstance.componentDidMount)
     componentInstance.componentDidMount();
-  componentInstance._dom = dom;
+  // 记录真实DOM
+  componentInstance.dom = dom;
+  // 记录Vdom
+  componentInstance.oldVdom = renderVdom;
   return dom;
 };
 
