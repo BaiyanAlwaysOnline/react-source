@@ -1,4 +1,5 @@
 import ReactDOM from "./react-dom";
+import React from "./react.js";
 // import Welcome from "./components/class-component";
 // import Tick from "./components/setState";
 // import Sum from "./components/createRef";

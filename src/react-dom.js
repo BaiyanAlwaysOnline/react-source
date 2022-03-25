@@ -105,7 +105,7 @@ const updateClassComponent = (vdom) => {
   const { type: ClassComponent, props } = vdom;
   const componentInstance = new ClassComponent(props);
   // 记录实例
-  vdom.componentInstance = componentInstance;
+  // vdom.componentInstance = componentInstance;
   if (componentInstance.componentWillMount)
     componentInstance.componentWillMount();
   // 生成新Vdom

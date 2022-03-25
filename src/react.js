@@ -171,7 +171,7 @@ const createRef = () => {
 };
 
 const React = {
-  createElement: () => {},
+  createElement,
   Component,
   createRef,
 };
