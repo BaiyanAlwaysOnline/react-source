@@ -1,4 +1,4 @@
-import { createDom, compareTwoVDom } from "./react-dom";
+import { compareTwoVDom } from "./react-dom";
 import { isFunction } from "./utils.js";
 
 /**
@@ -130,14 +130,12 @@ class Component {
     if (this.componentWillUpdate) this.componentWillUpdate();
     const newVdom = this.render();
     const currentDom = compareTwoVDom(
-      this.oldVdom,
-      newVdom,
-      this.dom.parentNode
+      this.oldVdom, // 初始化的时候挂载到组件实例上的老虚拟DOM
+      newVdom, // 此次更新产生的新虚拟Dom
+      this.oldVdom.dom.parentNode
     );
-    // const newDom = createDom(currentDom);
-    // this.dom.parentNode.replaceChild(newDom, this.dom);
     // 更新真实DOM
-    // this.dom = newDom;
+    this.dom = currentDom;
     if (this.componentDidUpdate) this.componentDidUpdate();
   }
 }

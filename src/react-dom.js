@@ -85,7 +85,12 @@ const updateProperties = (dom, props) => {
  * @param {*} parentDom
  * @return {Object} currentNode
  */
-export const compareTwoVDom = (oldVdom, newVdom, parentNode) => {};
+export const compareTwoVDom = (oldVdom, newVdom, parentNode) => {
+  // TODO DOM DIFF
+  const newDom = createDom(newVdom);
+  parentNode.replaceChild(newDom, oldVdom.dom);
+  return newDom;
+};
 
 /**
  * 挂载节点所有children
@@ -100,19 +105,20 @@ const reconcileChildren = (children, dom) => {
  * 接收类组件，生成真实要渲染的VDOM
  * @param {*} vdom
  * @returns dom
+ * ! 特别注意 vdom和renderDom的区别： vdom是类组件  renderVdom 是类组件的render执行返回的具体内容
  */
 const updateClassComponent = (vdom) => {
   const { type: ClassComponent, props } = vdom;
   const componentInstance = new ClassComponent(props);
   // 记录实例
-  // vdom.componentInstance = componentInstance;
+  vdom.componentInstance = componentInstance;
   if (componentInstance.componentWillMount)
     componentInstance.componentWillMount();
   // 生成新Vdom
   const renderVdom = componentInstance.render();
   // 根据Vdom生成真实DOM
   const dom = createDom(renderVdom);
-  // ? 这里没看懂要干什么用
+  // ? 这里没看懂要干什么用，因为componentInstance上面就有dom
   vdom.dom = renderVdom.dom = dom;
   // TODO 先这么写
   if (componentInstance.componentDidMount)
