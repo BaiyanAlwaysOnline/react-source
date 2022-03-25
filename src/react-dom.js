@@ -6,7 +6,7 @@ import { addEvent } from "./event.js";
  */
 const render = (vdom, container) => {
   const dom = createDom(vdom);
-  container.appendChild(dom);
+  dom && container.appendChild(dom);
 };
 
 /**
@@ -18,6 +18,9 @@ export const createDom = (vdom) => {
   // 数字或者字符串 => 文本节点
   if (typeof vdom === "string" || typeof vdom === "number") {
     return document.createTextNode(vdom);
+  }
+  if (vdom === null) {
+    return "";
   }
   const {
     type, // ! 字符串/函数组件/类组件

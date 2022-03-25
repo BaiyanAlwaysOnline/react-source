@@ -135,7 +135,8 @@ class Component {
       this.oldVdom.dom.parentNode
     );
     // 更新真实DOM
-    this.dom = currentDom;
+    this.oldVdom = newVdom;
+    this.oldVdom.dom = currentDom;
     if (this.componentDidUpdate) this.componentDidUpdate();
   }
 }
