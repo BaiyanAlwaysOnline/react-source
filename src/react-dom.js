@@ -19,7 +19,7 @@ export const createDom = (vdom) => {
   if (typeof vdom === "string" || typeof vdom === "number") {
     return document.createTextNode(vdom);
   }
-  if (vdom === null) {
+  if (!vdom) {
     return "";
   }
   const {
@@ -40,7 +40,7 @@ export const createDom = (vdom) => {
   } else {
     dom = document.createElement(type);
   }
-  updateProperties(dom, props);
+  updateProperties(dom, {}, props);
   if (typeof children === "string" || typeof children === "number") {
     // 儿子是字符串或者数字
     dom.textContent = children;
@@ -57,6 +57,8 @@ export const createDom = (vdom) => {
   if (ref)
     // 如果传了ref，ref.current => 真实Dom
     ref.current = dom;
+
+  vdom.dom = dom;
   return dom;
 };
 
@@ -65,34 +67,20 @@ export const createDom = (vdom) => {
  * @param {*} dom
  * @param {*} props
  */
-const updateProperties = (dom, props) => {
-  for (const key in props) {
+const updateProperties = (dom, oldProps, newProps) => {
+  for (const key in newProps) {
     if (key === "children") continue;
     if (key === "style") {
-      const styleObj = props[key];
+      const styleObj = newProps[key];
       for (const prop in styleObj) {
         dom.style[prop] = styleObj[prop];
       }
     } else if (key.startsWith("on")) {
-      addEvent(dom, key.toLocaleLowerCase(), props[key]);
+      addEvent(dom, key.toLocaleLowerCase(), newProps[key]);
     } else {
-      dom[key] = props[key];
+      dom[key] = newProps[key];
     }
   }
-};
-
-/**
- *
- * @param {*} oldVdom
- * @param {*} newVdom
- * @param {*} parentDom
- * @return {Object} currentNode
- */
-export const compareTwoVDom = (oldVdom, newVdom, parentNode) => {
-  // TODO DOM DIFF
-  const newDom = createDom(newVdom);
-  parentNode.replaceChild(newDom, oldVdom.dom);
-  return newDom;
 };
 
 /**
@@ -102,6 +90,97 @@ export const compareTwoVDom = (oldVdom, newVdom, parentNode) => {
  */
 const reconcileChildren = (children, dom) => {
   children.forEach((child) => render(child, dom));
+};
+
+/**
+ *
+ * @param {*} oldVdom
+ * @param {*} newVdom
+ * @param {*} parentDom
+ * @return {Object} currentNode
+ */
+export const compareTwoVDom = (oldVdom, newVdom, parentDom) => {
+  if (oldVdom === null && newVdom === null) return null;
+  else if (oldVdom && newVdom === null) {
+    // 老有 新无 => 删除
+    const currentDom = oldVdom.dom;
+
+    if (oldVdom.componentInstance.componentWillUnmount)
+      oldVdom.componentInstance.componentWillUnmount();
+
+    parentDom.removeChild(currentDom);
+    return null;
+  } else if (newVdom && oldVdom === null) {
+    // 老无 新有 -> 插入
+    const currentDom = createDom(newVdom);
+    newVdom.dom = currentDom;
+    // FIXME 这里appendchild有问题
+    parentDom.appendChild(currentDom);
+    return newVdom;
+  } else {
+    // 新有 老有 => domdiff
+    updateElement(oldVdom, newVdom);
+    return newVdom;
+  }
+};
+
+/**
+ * 更新元素
+ * @param {*} oldVdom
+ * @param {*} newVdom
+ */
+const updateElement = (oldVdom, newVdom) => {
+  const currentDom = oldVdom.dom;
+  newVdom.dom = currentDom;
+  newVdom.classInstance = oldVdom.classInstance;
+  // 两种情况
+  // 1.原生DOM
+  if (typeof oldVdom.type === "string") {
+    debugger;
+    // 更新属性
+    updateProperties(currentDom, oldVdom.props, newVdom.props);
+    // 更新children
+    updateChildren(currentDom, newVdom.props.children, oldVdom.props.children);
+  }
+  // 2.类组件或者函数组件
+  else if (typeof oldVdom.type === "function") {
+    updateClassInstance(oldVdom, newVdom);
+  }
+};
+
+/**
+ * diff children
+ * @param {*} dom
+ * @param {*} oldChildren
+ * @param {*} newChildren
+ */
+const updateChildren = (dom, oldChildren, newChildren) => {
+  // 如果新老儿子都是数字，字符串
+  if (
+    (typeof oldChildren === "string" || typeof oldChildren === "number") &&
+    (typeof newChildren === "string" || typeof newChildren === "number")
+  ) {
+    if (oldChildren !== newChildren) {
+      dom.textContent = newChildren;
+    }
+    return;
+  }
+
+  // 否则递归逐一比较
+  oldChildren = Array.isArray(oldChildren) ? oldChildren : [oldChildren];
+  newChildren = Array.isArray(newChildren) ? newChildren : [newChildren];
+  const maxLen = Math.max(oldChildren.length, newChildren.length);
+  for (let i = 0; i < maxLen; i++) {
+    compareTwoVDom(oldChildren[i], newChildren[i], dom);
+  }
+};
+
+const updateClassInstance = (oldVdom, newVdom) => {
+  const classInstance = oldVdom.componentInstance;
+  if (classInstance.componentWillReceiveProps)
+    classInstance.componentWillReceiveProps();
+
+  classInstance.updater.emitUpdate(newVdom.props);
 };
 
 /**

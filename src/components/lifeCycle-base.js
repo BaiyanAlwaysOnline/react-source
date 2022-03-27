@@ -48,9 +48,9 @@ class Counter extends React.Component {
     console.log("3 render");
     return (
       <div>
-        {this.state.num}
+        <p>{this.state.num}</p>
         <button onClick={this.add}>add</button>
-        {this.state.num === 4 ? null : <Child num={this.state.num} />}
+        <p>{this.state.num === 4 ? null : <Child num={this.state.num} />}</p>
       </div>
     );
   }

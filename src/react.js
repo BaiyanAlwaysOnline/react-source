@@ -1,4 +1,4 @@
-import { compareTwoVDom } from "./react-dom";
+import { createDom, compareTwoVDom } from "./react-dom";
 import { isFunction } from "./utils.js";
 
 /**
@@ -64,20 +64,21 @@ class Updater {
   /**
    * @desc 触发更新
    */
-  emitUpdate() {
+  emitUpdate(nextProps) {
+    this.nextProps = nextProps;
     // 判断当前是否正在批量更新中（异步）
-    updaterQueue.isBatchingUpdate
-      ? updaterQueue.add(this)
-      : this.updateComponent();
+    !updaterQueue.isBatchingUpdate || nextProps
+      ? this.updateComponent()
+      : updaterQueue.add(this);
   }
 
   /**
    * @desc 用批处理的状态，更新组件
    */
   updateComponent() {
-    const { classInstance, pendingStates } = this;
-    if (pendingStates.length) {
-      shouldComponentUpdate(classInstance, this.getState());
+    const { classInstance, pendingStates, nextProps } = this;
+    if (pendingStates.length || nextProps) {
+      shouldComponentUpdate(classInstance, nextProps, this.getState());
     }
   }
 
@@ -135,8 +136,7 @@ class Component {
       this.oldVdom.dom.parentNode
     );
     // 更新真实DOM
-    this.oldVdom = newVdom;
-    this.oldVdom.dom = currentDom;
+    this.oldVdom = currentDom;
     if (this.componentDidUpdate) this.componentDidUpdate();
   }
 }
@@ -144,9 +144,11 @@ class Component {
 /**
  * 判断是否渲染页面
  * @param {*} classInstance
+ * @param {*} nextProps
  * @param {*} state
  */
-const shouldComponentUpdate = (classInstance, state) => {
+const shouldComponentUpdate = (classInstance, nextProps, state) => {
+  if (nextProps) classInstance.props = nextProps;
   // 不管视图是否更新，状态都要更新
   classInstance.state = state;
   // 如果这个生命周期返回false，视图不更新
