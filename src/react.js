@@ -12,6 +12,8 @@ export const createElement = (type, config, ...children) => {
   if (config) {
     Reflect.deleteProperty(config, "_owner");
     Reflect.deleteProperty(config, "_store");
+    Reflect.deleteProperty(config, "__self");
+    Reflect.deleteProperty(config, "__source");
     ref = config.ref; // ref babel编译的时候会放在config中，使用的时候和props同级
     Reflect.deleteProperty(config, "ref");
   }
@@ -130,13 +132,13 @@ class Component {
   forceUpdate() {
     if (this.componentWillUpdate) this.componentWillUpdate();
     const newVdom = this.render();
-    const currentDom = compareTwoVDom(
+    compareTwoVDom(
       this.oldVdom, // 初始化的时候挂载到组件实例上的老虚拟DOM
       newVdom, // 此次更新产生的新虚拟Dom
       this.oldVdom.dom.parentNode
     );
     // 更新真实DOM
-    this.oldVdom = currentDom;
+    this.oldVdom = newVdom;
     if (this.componentDidUpdate) this.componentDidUpdate();
   }
 }
@@ -153,12 +155,11 @@ const shouldComponentUpdate = (classInstance, nextProps, state) => {
   classInstance.state = state;
   // 如果这个生命周期返回false，视图不更新
   if (
-    !(
-      classInstance.shouldComponentUpdate &&
-      classInstance.shouldComponentUpdate(classInstance.props, state)
-    )
-  )
+    classInstance.shouldComponentUpdate &&
+    !classInstance.shouldComponentUpdate(classInstance.props, state)
+  ) {
     return;
+  }
   // 更新视图
   classInstance.forceUpdate();
 };

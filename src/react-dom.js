@@ -100,17 +100,17 @@ const reconcileChildren = (children, dom) => {
  * @return {Object} currentNode
  */
 export const compareTwoVDom = (oldVdom, newVdom, parentDom) => {
-  if (oldVdom === null && newVdom === null) return null;
-  else if (oldVdom && newVdom === null) {
+  if (!oldVdom && !newVdom) return null;
+  else if (oldVdom && !newVdom) {
     // 老有 新无 => 删除
     const currentDom = oldVdom.dom;
-
-    if (oldVdom.componentInstance.componentWillUnmount)
-      oldVdom.componentInstance.componentWillUnmount();
+    // oldVdom如果是一个class组件类型的vdom，才会有实例属性，才会执行生命周期方法
+    if (oldVdom.classInstance && oldVdom.classInstance.componentWillUnmount)
+      oldVdom.classInstance.componentWillUnmount();
 
     parentDom.removeChild(currentDom);
     return null;
-  } else if (newVdom && oldVdom === null) {
+  } else if (newVdom && !oldVdom) {
     // 老无 新有 -> 插入
     const currentDom = createDom(newVdom);
     newVdom.dom = currentDom;
@@ -136,11 +136,10 @@ const updateElement = (oldVdom, newVdom) => {
   // 两种情况
   // 1.原生DOM
   if (typeof oldVdom.type === "string") {
-    debugger;
     // 更新属性
     updateProperties(currentDom, oldVdom.props, newVdom.props);
     // 更新children
-    updateChildren(currentDom, newVdom.props.children, oldVdom.props.children);
+    updateChildren(currentDom, oldVdom.props.children, newVdom.props.children);
   }
   // 2.类组件或者函数组件
   else if (typeof oldVdom.type === "function") {
@@ -176,8 +175,8 @@ const updateChildren = (dom, oldChildren, newChildren) => {
 };
 
 const updateClassInstance = (oldVdom, newVdom) => {
-  const classInstance = oldVdom.componentInstance;
-  if (classInstance.componentWillReceiveProps)
+  const classInstance = oldVdom.classInstance;
+  if (classInstance?.componentWillReceiveProps)
     classInstance.componentWillReceiveProps();
 
   classInstance.updater.emitUpdate(newVdom.props);
@@ -185,30 +184,28 @@ const updateClassInstance = (oldVdom, newVdom) => {
 
 /**
  * 接收类组件，生成真实要渲染的VDOM
- * @param {*} vdom
+ * @param {*} vdom 只收class组件类型的vdom
  * @returns dom
  * ! 特别注意 vdom和renderDom的区别： vdom是类组件  renderVdom 是类组件的render执行返回的具体内容
  */
 const updateClassComponent = (vdom) => {
   const { type: ClassComponent, props } = vdom;
-  const componentInstance = new ClassComponent(props);
+  const classInstance = new ClassComponent(props);
   // 记录实例
-  vdom.componentInstance = componentInstance;
-  if (componentInstance.componentWillMount)
-    componentInstance.componentWillMount();
+  vdom.classInstance = classInstance;
+  if (classInstance.componentWillMount) classInstance.componentWillMount();
   // 生成新Vdom
-  const renderVdom = componentInstance.render();
+  const renderVdom = classInstance.render();
   // 根据Vdom生成真实DOM
   const dom = createDom(renderVdom);
-  // ? 这里没看懂要干什么用，因为componentInstance上面就有dom
+  // ? 这里没看懂要干什么用，因为classInstance上面就有dom
   vdom.dom = renderVdom.dom = dom;
   // TODO 先这么写
-  if (componentInstance.componentDidMount)
-    componentInstance.componentDidMount();
+  if (classInstance.componentDidMount) classInstance.componentDidMount();
   // 记录真实DOM
-  componentInstance.dom = dom;
+  classInstance.dom = dom;
   // 记录Vdom
-  componentInstance.oldVdom = renderVdom;
+  classInstance.oldVdom = renderVdom;
   return dom;
 };
 

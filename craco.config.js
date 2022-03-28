@@ -14,4 +14,7 @@ module.exports = {
   babel: {
     plugins: [["@babel/plugin-transform-react-jsx"]],
   },
+  devServer: {
+    port: 3002,
+  },
 };

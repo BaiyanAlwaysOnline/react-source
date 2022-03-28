@@ -47,7 +47,7 @@ class Counter extends React.Component {
   render() {
     console.log("3 render");
     return (
-      <div>
+      <div id={`counter-${this.state.num}`}>
         <p>{this.state.num}</p>
         <button onClick={this.add}>add</button>
         <p>{this.state.num === 4 ? null : <Child num={this.state.num} />}</p>
@@ -62,7 +62,11 @@ class Child extends React.Component {
   }
   render() {
     console.log("child2 render");
-    return <h3>{this.props.num}</h3>;
+    return (
+      <div id={`childCounter-${this.props.num}`}>
+        <h3>{this.props.num}</h3>
+      </div>
+    );
   }
   componentDidMount() {
     console.log("child3 componentDidMount");
@@ -70,7 +74,7 @@ class Child extends React.Component {
   // ! 组件的父组件更新，就会触发
   componentWillReceiveProps(nextProps) {
     console.log(Array.prototype.slice.call(arguments));
-    console.log("child4 componentWillReceiveProps");
+    console.log("child4 componentWillReceiveProps", nextProps);
   }
   componentWillUpdate() {
     console.log("child5 componentWillUpdate");
