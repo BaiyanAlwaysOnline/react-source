@@ -32,10 +32,10 @@ export const createDom = (vdom) => {
   if (typeof type === "function") {
     if (type.isReactComponent) {
       // 是类组件 => babel编译完class就是一个function
-      return updateClassComponent(vdom);
+      return mountClassComponent(vdom);
     } else {
       // 是函数组件
-      return updateFunctionalComponent(vdom);
+      return mountFunctionalComponent(vdom);
     }
   } else {
     dom = document.createElement(type);
@@ -116,11 +116,9 @@ export const compareTwoVDom = (oldVdom, newVdom, parentDom) => {
     newVdom.dom = currentDom;
     // FIXME 这里appendchild有问题
     parentDom.appendChild(currentDom);
-    return newVdom;
   } else {
     // 新有 老有 => domdiff
     updateElement(oldVdom, newVdom);
-    return newVdom;
   }
 };
 
@@ -188,7 +186,7 @@ const updateClassInstance = (oldVdom, newVdom) => {
  * @returns dom
  * ! 特别注意 vdom和renderDom的区别： vdom是类组件  renderVdom 是类组件的render执行返回的具体内容
  */
-const updateClassComponent = (vdom) => {
+const mountClassComponent = (vdom) => {
   const { type: ClassComponent, props } = vdom;
   const classInstance = new ClassComponent(props);
   // 记录实例
@@ -214,7 +212,7 @@ const updateClassComponent = (vdom) => {
  * @param {*} vdom
  * @returns dom
  */
-const updateFunctionalComponent = (vdom) => {
+const mountFunctionalComponent = (vdom) => {
   const { type: functionalComponent, props } = vdom;
   const renderVdom = functionalComponent(props);
   return createDom(renderVdom);

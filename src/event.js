@@ -1,4 +1,4 @@
-import { updaterQueue } from "./react.js";
+import { updaterQueue } from "./Updater.js";
 
 /**
  * @desc  合成事件，event是经过React封装的，不是原生事件，通过事件委托到document上（React17之前，17以后委托到了root上）
