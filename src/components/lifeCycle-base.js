@@ -49,8 +49,8 @@ class Counter extends React.Component {
     return (
       <div id={`counter-${this.state.num}`}>
         <p>{this.state.num}</p>
+        {this.state.num === 4 ? null : <Child num={this.state.num} />}
         <button onClick={this.add}>add</button>
-        <p>{this.state.num === 4 ? null : <Child num={this.state.num} />}</p>
       </div>
     );
   }
@@ -73,8 +73,7 @@ class Child extends React.Component {
   }
   // ! 组件的父组件更新，就会触发
   componentWillReceiveProps(nextProps) {
-    console.log(Array.prototype.slice.call(arguments));
-    console.log("child4 componentWillReceiveProps", nextProps);
+    console.log("child4 componentWillReceiveProps");
   }
   componentWillUpdate() {
     console.log("child5 componentWillUpdate");

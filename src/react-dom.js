@@ -99,7 +99,7 @@ const reconcileChildren = (children, dom) => {
  * @param {*} parentDom
  * @return {Object} currentNode
  */
-export const compareTwoVDom = (oldVdom, newVdom, parentDom) => {
+export const compareTwoVDom = (parentDom, oldVdom, newVdom, nextDom) => {
   if (!oldVdom && !newVdom) return null;
   else if (oldVdom && !newVdom) {
     // 老有 新无 => 删除
@@ -114,8 +114,12 @@ export const compareTwoVDom = (oldVdom, newVdom, parentDom) => {
     // 老无 新有 -> 插入
     const currentDom = createDom(newVdom);
     newVdom.dom = currentDom;
-    // FIXME 这里appendchild有问题
-    parentDom.appendChild(currentDom);
+    // ! 不能直接append，如果当前元素最后一个的话，直接append，否则应该insertBefore到下一个兄弟的前面
+    if (nextDom) {
+      parentDom.insertBefore(currentDom, nextDom);
+    } else {
+      parentDom.appendChild(currentDom);
+    }
   } else {
     // 新有 老有 => domdiff
     updateElement(oldVdom, newVdom);
@@ -168,7 +172,11 @@ const updateChildren = (dom, oldChildren, newChildren) => {
   newChildren = Array.isArray(newChildren) ? newChildren : [newChildren];
   const maxLen = Math.max(oldChildren.length, newChildren.length);
   for (let i = 0; i < maxLen; i++) {
-    compareTwoVDom(oldChildren[i], newChildren[i], dom);
+    // newChildren上还没有挂载dom属性
+    const nextDom = oldChildren.find(
+      (child, index) => index > i && child && child.dom
+    );
+    compareTwoVDom(dom, oldChildren[i], newChildren[i], nextDom?.dom);
   }
 };
 

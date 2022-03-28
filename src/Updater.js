@@ -10,7 +10,6 @@ export const updaterQueue = {
     this.updaters.add(updater);
   },
   batchUpdate() {
-    console.log(this.updaters.size);
     this.updaters.forEach((updater) => {
       updater.updateComponent();
     });

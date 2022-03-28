@@ -27,9 +27,9 @@ export default class Component {
     if (this.componentWillUpdate) this.componentWillUpdate();
     const newVdom = this.render();
     compareTwoVDom(
+      this.oldVdom.dom.parentNode,
       this.oldVdom, // 初始化的时候挂载到组件实例上的老虚拟DOM
-      newVdom, // 此次更新产生的新虚拟Dom
-      this.oldVdom.dom.parentNode
+      newVdom // 此次更新产生的新虚拟Dom
     );
     // 更新真实DOM
     this.oldVdom = newVdom;
