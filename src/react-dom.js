@@ -199,6 +199,7 @@ const mountClassComponent = (vdom) => {
   const classInstance = new ClassComponent(props);
   // 记录实例
   vdom.classInstance = classInstance;
+  classInstance.ownVdom = vdom;
   if (classInstance.componentWillMount) classInstance.componentWillMount();
   // 生成新Vdom
   const renderVdom = classInstance.render();

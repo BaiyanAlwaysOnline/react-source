@@ -25,6 +25,14 @@ export default class Component {
 
   forceUpdate() {
     if (this.componentWillUpdate) this.componentWillUpdate();
+    // ownVdom组件的vdom，oldVdom是render返回的vdom
+    if (this.ownVdom.type.getDerivedStateFromProps) {
+      const derviedState = this.ownVdom.type.getDerivedStateFromProps(
+        this.props,
+        this.state
+      );
+      if (derviedState) this.state = derviedState;
+    }
     const newVdom = this.render();
     compareTwoVDom(
       this.oldVdom.dom.parentNode,

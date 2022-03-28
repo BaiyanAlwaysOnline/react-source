@@ -3,7 +3,8 @@ import React from "./react.js";
 // import Welcome from "./components/class-component";
 // import Tick from "./components/setState";
 // import Sum from "./components/createRef";
-import Counter from "./components/lifeCycle-base";
+// import Counter from "./components/lifeCycle-base";
+import Counter from "./components/lifeCycle-new";
 
 const root = document.getElementById("root");
 ReactDOM.render(
