@@ -107,5 +107,33 @@ class Message extends React.Component {
   }
 }
 
+// 如果是不同的type
+class Test extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      num: 0,
+    };
+  }
+
+  add = () => {
+    this.setState({ num: this.state.num + 1 });
+  };
+
+  render() {
+    return (
+      <div id={`counter-${this.state.num}`}>
+        <p>{this.state.num}</p>
+        {this.state.num % 2 ? (
+          <h3>{this.state.num}</h3>
+        ) : (
+          <span>{this.state.num}</span>
+        )}
+        <button onClick={this.add}>add</button>
+      </div>
+    );
+  }
+}
 // export default Counter;
-export default Message;
+// export default Message;
+export default Test;

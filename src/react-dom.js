@@ -120,6 +120,14 @@ export const compareTwoVDom = (parentDom, oldVdom, newVdom, nextDom) => {
     } else {
       parentDom.appendChild(currentDom);
     }
+  } else if (newVdom && oldVdom && newVdom.type !== oldVdom.type) {
+    const oldDom = oldVdom.dom;
+    const newDom = createDom(newVdom);
+    // 如果是类组件，执行生命周期方法
+    if (oldVdom.classInstance && oldVdom.classInstance.componentWillUnmount)
+      oldVdom.classInstance.componentWillUnmount();
+    // 如果新老节点的type不同，也要删除重建
+    parentDom.replaceChild(newDom, oldDom);
   } else {
     // 新有 老有 => domdiff
     updateElement(oldVdom, newVdom);
