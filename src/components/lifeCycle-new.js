@@ -38,8 +38,6 @@ class ChildCounter extends React.Component {
 
   // 从props派生出state
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("getDerivedStateFromProps");
-
     const { num } = nextProps;
     if (num % 2 === 0) {
       return {
@@ -67,6 +65,21 @@ class Message extends React.Component {
     this.state = {
       message: [0],
     };
+    this.wrapper = React.createRef();
+  }
+
+  // render执行完成后生成vdom，在compare之前执行
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    const dom = this.wrapper.current;
+    return dom.scrollHeight - dom.scrollTop;
+    // dom.scrollHeight(+) - dom.scrollTop = x;  => dom.scrollHeight在逐渐增加，把scrollHeight的增量转移给scrollTop，通过这样滚动条一直往下滚模拟
+    // 10 - scrollTop(4) = 6
+    // 12 - 6 = scrollTop(6)
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const dom = this.wrapper.current;
+    snapshot && (dom.scrollTop = dom.scrollHeight - snapshot);
   }
 
   componentDidMount() {
@@ -84,7 +97,13 @@ class Message extends React.Component {
       overflow: "auto",
       border: "1px solid red",
     };
-    return <div style={style}>1</div>;
+    return (
+      <div id="container" ref={this.wrapper} style={style}>
+        {this.state.message.map((item) => (
+          <div key={item}>{item}</div>
+        ))}
+      </div>
+    );
   }
 }
 

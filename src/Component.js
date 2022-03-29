@@ -34,6 +34,9 @@ export default class Component {
       if (derviedState) this.state = derviedState;
     }
     const newVdom = this.render();
+    const snapShot =
+      this.getSnapshotBeforeUpdate &&
+      this.getSnapshotBeforeUpdate(this.props, this.state);
     compareTwoVDom(
       this.oldVdom.dom.parentNode,
       this.oldVdom, // 初始化的时候挂载到组件实例上的老虚拟DOM
@@ -41,6 +44,7 @@ export default class Component {
     );
     // 更新真实DOM
     this.oldVdom = newVdom;
-    if (this.componentDidUpdate) this.componentDidUpdate();
+    if (this.componentDidUpdate)
+      this.componentDidUpdate(this.props, this.state, snapShot);
   }
 }
