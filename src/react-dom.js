@@ -140,12 +140,11 @@ export const compareTwoVDom = (parentDom, oldVdom, newVdom, nextDom) => {
  * @param {*} newVdom
  */
 const updateElement = (oldVdom, newVdom) => {
-  const currentDom = oldVdom.dom;
-  newVdom.dom = currentDom;
-  newVdom.classInstance = oldVdom.classInstance;
   // 两种情况
   // 1.原生DOM
   if (typeof oldVdom.type === "string") {
+    const currentDom = oldVdom.dom;
+    newVdom.dom = currentDom;
     // 更新属性
     updateProperties(currentDom, oldVdom.props, newVdom.props);
     // 更新children
@@ -153,7 +152,15 @@ const updateElement = (oldVdom, newVdom) => {
   }
   // 2.类组件或者函数组件
   else if (typeof oldVdom.type === "function") {
-    updateClassInstance(oldVdom, newVdom);
+    if (oldVdom.type.isReactComponent) {
+      newVdom.dom = oldVdom.dom;
+      newVdom.classInstance = oldVdom.classInstance;
+      // 是类组件
+      updateClassInstance(oldVdom, newVdom);
+    } else {
+      // 是函数组件
+      updateFunctionComponent(oldVdom, newVdom);
+    }
   }
 };
 
@@ -189,11 +196,24 @@ const updateChildren = (dom, oldChildren, newChildren) => {
 };
 
 const updateClassInstance = (oldVdom, newVdom) => {
+  debugger;
   const classInstance = oldVdom.classInstance;
   if (classInstance?.componentWillReceiveProps)
     classInstance.componentWillReceiveProps();
 
   classInstance.updater.emitUpdate(newVdom.props);
+};
+
+const updateFunctionComponent = (oldVdom, newVdom) => {
+  const { props, type: renderFunction } = newVdom;
+  const newRenderVodm = renderFunction(props);
+  createDom(newRenderVodm);
+  newVdom.renderVdom = newRenderVodm;
+  compareTwoVDom(
+    oldVdom.renderVdom.dom.parentNode,
+    oldVdom.renderVdom,
+    newRenderVodm
+  );
 };
 
 /**
@@ -232,6 +252,8 @@ const mountClassComponent = (vdom) => {
 const mountFunctionalComponent = (vdom) => {
   const { type: functionalComponent, props } = vdom;
   const renderVdom = functionalComponent(props);
+  vdom.renderVdom = renderVdom;
+  // createDom执行会给renderVdom上面挂载它的真实dom
   return createDom(renderVdom);
 };
 

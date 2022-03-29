@@ -4,13 +4,14 @@ import React from "./react.js";
 // import Tick from "./components/setState";
 // import Sum from "./components/createRef";
 // import Counter from "./components/lifeCycle-base";
-import Counter from "./components/lifeCycle-new";
+// import Counter from "./components/lifeCycle-new";
+import Context from "./components/context";
 
 const root = document.getElementById("root");
 ReactDOM.render(
   // <Welcome className="title" style={{ color: "purple" }} name="打工人！" />,
   // <Tick />,
   // <Sum />,
-  <Counter />,
+  <Context />,
   root
 );

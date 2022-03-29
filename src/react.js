@@ -35,10 +35,31 @@ const createRef = () => {
   return { current: null };
 };
 
+const createContext = (initialValue) => {
+  let _value = initialValue || {};
+
+  const Provider = ({ value, children }) => {
+    // 通过闭包记录value
+    _value = value;
+    return children;
+  };
+
+  const Consumer = ({ children }) => {
+    // children必须是一个函数
+    return children(_value);
+  };
+
+  return {
+    Provider,
+    Consumer,
+  };
+};
+
 const React = {
   createElement,
   Component,
   createRef,
+  createContext,
 };
 
 export default React;
