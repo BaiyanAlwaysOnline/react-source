@@ -48,3 +48,26 @@ export default class Component {
       this.componentDidUpdate(this.props, this.state, snapShot);
   }
 }
+
+export class PureComponent extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(nextState, this.state)) {
+      return true;
+    }
+
+    if (!isEqual(nextProps, this.props)) {
+      return true;
+    }
+    return false;
+  }
+}
+
+function isEqual(a, b) {
+  if (Object.keys(a).length !== Object.keys(b).length) {
+    return false;
+  }
+  for (let k in a) {
+    if (a[k] !== b[k]) return false;
+  }
+  return true;
+}

@@ -4,8 +4,8 @@ import { addEvent } from "./event.js";
  * @param {*} vdom
  * @param {*} container
  */
-const render = (vdom, container) => {
-  const dom = createDom(vdom);
+const render = (vdom, container, mountIndex) => {
+  const dom = createDom(vdom, mountIndex);
   dom && container.appendChild(dom);
 };
 
@@ -14,10 +14,12 @@ const render = (vdom, container) => {
  * @param {*} vdom
  * @return dom
  */
-export const createDom = (vdom) => {
+export const createDom = (vdom, mountIndex) => {
   // 数字或者字符串 => 文本节点
   if (typeof vdom === "string" || typeof vdom === "number") {
-    return document.createTextNode(vdom);
+    const dom = document.createTextNode(vdom);
+    dom._mountIndex = mountIndex;
+    return dom;
   }
   if (!vdom) {
     return "";
@@ -59,6 +61,7 @@ export const createDom = (vdom) => {
     ref.current = dom;
 
   vdom.dom = dom;
+  dom._mountIndex = mountIndex;
   return dom;
 };
 
@@ -89,7 +92,7 @@ const updateProperties = (dom, oldProps, newProps) => {
  * @param {*} dom
  */
 const reconcileChildren = (children, dom) => {
-  children.forEach((child) => render(child, dom));
+  children.forEach((child, index) => render(child, dom, index));
 };
 
 /**
@@ -191,12 +194,22 @@ const updateChildren = (dom, oldChildren, newChildren) => {
     const nextDom = oldChildren.find(
       (child, index) => index > i && child && child.dom
     );
+    // 如果儿子是文本节点的话 - 处理多个文本子节点的情况
+    if (
+      (typeof oldChildren[i] === "string" ||
+        typeof oldChildren[i] === "number") &&
+      (typeof newChildren[i] === "string" || typeof newChildren[i] === "number")
+    ) {
+      if (oldChildren[i] !== newChildren[i]) {
+        dom.childNodes[i].textContent = newChildren[i];
+      }
+      continue;
+    }
     compareTwoVDom(dom, oldChildren[i], newChildren[i], nextDom?.dom);
   }
 };
 
 const updateClassInstance = (oldVdom, newVdom) => {
-  debugger;
   const classInstance = oldVdom.classInstance;
   if (classInstance?.componentWillReceiveProps)
     classInstance.componentWillReceiveProps();

@@ -85,15 +85,17 @@ export default class Updater {
  */
 const shouldComponentUpdate = (classInstance, nextProps, state) => {
   if (nextProps) classInstance.props = nextProps;
-  // 不管视图是否更新，状态都要更新
-  classInstance.state = state;
   // 如果这个生命周期返回false，视图不更新
   if (
     classInstance.shouldComponentUpdate &&
     !classInstance.shouldComponentUpdate(classInstance.props, state)
   ) {
+    // 不管视图是否更新，状态都要更新
+    classInstance.state = state;
     return;
   }
+  // 不管视图是否更新，状态都要更新
+  classInstance.state = state;
   // 更新视图
   classInstance.forceUpdate();
 };

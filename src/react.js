@@ -1,4 +1,4 @@
-import Component from "./Component.js";
+import Component, { PureComponent } from "./Component.js";
 /**
  * 创建一个虚拟DOM结构
  * @param {*} type dom元素类型 字符串（dom元素 ）/组件
@@ -60,6 +60,7 @@ const React = {
   Component,
   createRef,
   createContext,
+  PureComponent,
 };
 
 export default React;
