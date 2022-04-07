@@ -52,6 +52,7 @@ const createContext = (initialValue) => {
   return {
     Provider,
     Consumer,
+    _currentValue: _value,
   };
 };
 

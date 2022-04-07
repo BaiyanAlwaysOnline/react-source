@@ -8,7 +8,9 @@ import React from "./react";
 // import Context from "./components/context";
 // import PureComponent from "./components/pure-component";
 // import { Counter } from "./components/useStateRef";
-import Parent from "./components/useMemoCB";
+// import Parent from "./components/useMemoCB";
+// import Parent from "./components/useReducer";
+import Parent from "./components/useContext";
 
 // const root = document.getElementById("root");
 
