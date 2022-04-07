@@ -10,7 +10,8 @@ import React from "./react";
 // import { Counter } from "./components/useStateRef";
 // import Parent from "./components/useMemoCB";
 // import Parent from "./components/useReducer";
-import Parent from "./components/useContext";
+// import Parent from "./components/useContext";
+import Parent from "./components/useEffect";
 
 // const root = document.getElementById("root");
 

@@ -12,7 +12,7 @@ const useState = (initialState) => {
 
   function setState(newState) {
     if (typeof newState === "function") {
-      newState = newState();
+      newState = newState(hooks[index]);
     }
     hooks[index] = newState;
     render();

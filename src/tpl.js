@@ -1,38 +1,48 @@
-import React, { useState, memo } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
-const Parent = () => {
-  const [str, setStr] = useState("");
-  const [num, setNum] = useState(0);
-  console.log("Parent render");
-  const numValue = {
-    num,
-  };
-  const handleSetNum = (val) => {
-    setNum(val);
-  };
-  return (
-    <div>
-      <input type="text" value={str} onChange={(e) => setStr(e.target.value)} />
-      <Child num={numValue.num} setNum={handleSetNum} />
-    </div>
-  );
+let hookIndex = 0;
+let hooks = [];
+
+const useState = (initialState) => {
+  let index = hookIndex;
+  hooks[index] =
+    hooks[index] ||
+    (typeof initialState === "function" ? initialState() : initialState);
+
+  function setState(newState) {
+    if (typeof newState === "function") {
+      newState = newState();
+    }
+    hooks[index] = newState;
+    render();
+  }
+
+  return [hooks[hookIndex++], setState];
 };
 
-const Child = memo(({ num, setNum }) => {
-  console.log("Child render");
+const Counter = () => {
+  console.log("Counter render");
+
+  const [num, setNum] = useState(0);
+
+  React.useEffect(() => {
+    document.title = `当前已经点击了第${num}次`;
+  });
+
   return (
     <div>
       <button onClick={() => setNum(num + 1)}>add {num}</button>
     </div>
   );
-});
+};
 
 const render = () => {
+  hookIndex = 0;
   const root = document.getElementById("root");
-  ReactDOM.render(<Parent />, root);
+  ReactDOM.render(<Counter />, root);
 };
 
 render();
 
-export default Parent;
+export default Counter;
