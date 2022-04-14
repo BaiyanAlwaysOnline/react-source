@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>123</div>
+    <script>
+      window.onpopstate = (e) => {
+        console.log(e);
+      };
+      setTimeout(() => {
+        history.pushState({}, null, "/browerRouter.html/a1");
+      }, 1000);
+      setTimeout(() => {
+        history.pushState({}, null, "/browerRouter.html/a2");
+      }, 2000);
+      setTimeout(() => {
+        history.pushState({}, null, "/browerRouter.html/a3");
+      }, 3000);
+      setTimeout(() => {
+        history.pushState({}, null, "/browerRouter.html/a4");
+      }, 4000);
+    </script>
+  </body>
+</html>

@@ -6,6 +6,7 @@ class Route extends React.Component {
     return (
       <RouterContext.Consumer>
         {(ctx) => {
+          debugger;
           const { history, location } = ctx;
           const { path, component: Component } = this.props;
           const match = location.pathname === path;
