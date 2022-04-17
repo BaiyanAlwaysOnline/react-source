@@ -1,10 +1,11 @@
 function createHashHistory() {
-  const globalHistory = window.history;
-  const globaLocation = window.location;
   let listeners = [];
-  const go = (n) => globalHistory.go(n);
-  const goBack = () => go(-1);
-  const goForward = () => go(1);
+  // ! hash自己维护一个栈和index去实现 go goback goforward的效果
+  let stack = [];
+  let index = -1;
+  // 路由传参：每一个location对应一个state，代表当前location的状态，可以用于存放任何信息
+  let state = null;
+  let action;
 
   /**
    * @param {*} listener
@@ -15,42 +16,60 @@ function createHashHistory() {
     return () => (listeners = listeners.filter((f) => f !== listener));
   };
 
-  const push = (pathname, state) => {
-    Object.assign(history.location, {
-      state,
-      pathname,
-    });
-    globaLocation.hash = pathname;
+  const excuteListen = () => {
+    listeners.forEach((f) => f(stack[index]));
+    action = null;
+    state = null;
   };
 
-  const setState = ({ action, location }) => {
+  const push = (path, nextState) => {
+    state = nextState;
+    window.location.hash = path;
+  };
+
+  const go = (n) => {
+    const idx = index + n;
+    const target = stack[idx];
+    if (target) {
+      index = idx;
+      const { pathname, state: nextState } = target;
+      state = nextState;
+      action = "POP";
+      window.location.hash = pathname;
+    }
+  };
+
+  const goBack = () => {
+    go(-1);
+  };
+
+  const goForward = () => {
+    go(1);
+  };
+
+  window.addEventListener("hashchange", () => {
+    if (!action) {
+      action = "PUSH";
+      stack[++index] = { pathname: getHash(), state };
+    }
     Object.assign(history, {
       action,
-      location,
+      location: stack[index],
     });
-    listeners.forEach((fn) => fn(location));
-  };
-
-  window.addEventListener("hashchange", (e) => {
-    const action = "PUSH";
-    setState({
-      action,
-      location: {
-        pathname: getHash(),
-        state: null,
-      },
-    });
+    excuteListen();
   });
 
   const history = {
     action: "POP",
+    location: { pathname: getHash(), state: null },
     go,
     goBack,
     goForward,
     listen,
-    location: { pathname: getHash(), state: null },
     push,
+    stack,
   };
+  window._history = history;
   init();
   return history;
 }

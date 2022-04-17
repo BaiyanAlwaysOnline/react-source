@@ -4,7 +4,7 @@
 - history 针对不同平台实现不同的历史对象
 - react-router-dom DOM（浏览器环境）下的路由相关逻辑
 
-### react-router-dom
+### react-router
 
 - Router: 路由容器
 - Route: 路由规则

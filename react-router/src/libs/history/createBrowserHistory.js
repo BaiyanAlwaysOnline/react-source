@@ -7,7 +7,7 @@ function createBrowserHistory() {
   const goForward = () => go(1);
 
   /**
-   * pushState不会触发onpopstate事件，通过执行监听函数，触发Router的setState从而更新页面
+   * ! pushState不会触发onpopstate事件，通过执行监听函数，触发Router的setState从而更新页面
    * @param {*} listener
    * @returns 事件监听移除函数
    */
@@ -26,6 +26,10 @@ function createBrowserHistory() {
     setState({ action, location });
   };
 
+  /**
+   * ! BrowserHistory本质都是触发Router组件的监听函数执行，只不过方式不同，一个是通过push触发（push不会触发onpopstate的执行），一个是监听onpopstate触发
+   *
+   */
   const setState = ({ action, location }) => {
     Object.assign(history, {
       action,
