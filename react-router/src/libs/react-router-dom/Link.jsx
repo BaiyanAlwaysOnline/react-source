@@ -6,10 +6,15 @@ export default function Link(props) {
 
   return (
     <a
+      href=""
       {...props}
       onClick={(e) => {
         e.preventDefault();
-        history.push(props.to);
+        if (typeof props.to === "string") {
+          history.push(props.to);
+        } else {
+          history.push(props.to.pathname, props.to.state);
+        }
       }}
     >
       {props.children}
