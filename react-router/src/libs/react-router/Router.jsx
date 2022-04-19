@@ -7,6 +7,10 @@ import RouterContext from "./RouterContext";
  * 2. 监听路径变化，触发setState
  */
 class Router extends React.Component {
+  // 创建初始根match
+  static computeRootMatch(path) {
+    return { path: "/", url: "/", isExact: path === "/", params: {} };
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +30,7 @@ class Router extends React.Component {
     const value = {
       location: this.state.location,
       history: this.props.history,
+      match: Router.computeRootMatch(this.props.history.pathname),
     };
     return (
       <RouterContext.Provider value={value}>

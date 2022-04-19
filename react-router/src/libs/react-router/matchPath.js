@@ -17,6 +17,7 @@ const compilePath = (path, options) => {
  * @returns
  */
 export default function matchPath(path, pathname, options = { exact: false }) {
+  debugger;
   const { keys, regexp } = compilePath(path, options);
   const match = regexp.exec(pathname);
   if (match) {

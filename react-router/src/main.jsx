@@ -4,67 +4,42 @@ import {
   HashRouter as Router,
   Route,
   Link,
-  Switch,
-  NavLink,
-  Redirect,
-  Prompt,
-} from "react-router-dom";
-import Welcome from "./components/Welcome";
-import Home from "./components/Home";
-import User from "./components/User";
-import Post from "./components/Post";
+  useHistory,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "./libs/react-router-dom";
+
+const App = () => {
+  const match = useRouteMatch({ path: "/app" });
+  console.log("APP match", match);
+  return match ? <div>App</div> : <div>Not Found</div>;
+};
+
+const Post = () => {
+  const params = useParams();
+  console.log("params", params);
+  const location = useLocation();
+  console.log("location", location);
+  const history = useHistory();
+  console.log("history", history);
+  const match = useRouteMatch();
+  console.log("match", match);
+  return (
+    <div>
+      <div>Post</div>
+      <div> id: {params.id}</div>
+      <div>title: {params.title}</div>
+    </div>
+  );
+};
 
 ReactDOM.render(
   <Router>
-    <ul>
-      <li>
-        <NavLink exact activeStyle={{ color: "red" }} to="/">
-          Welcome
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/home">Home</NavLink>
-      </li>
-      <li>
-        <NavLink to="/user">User</NavLink>
-      </li>
-      <li>
-        <NavLink to="/render">Render</NavLink>
-      </li>
-      <li>
-        <NavLink to="/children">children</NavLink>
-      </li>
-      <li>
-        {/* <NavLink to="/post/123">post</NavLink> */}
-        <NavLink to={{ pathname: "/post/1", state: { title: "Post1的标题" } }}>
-          post
-        </NavLink>
-      </li>
-    </ul>
-    {/* <Switch>
-      <Route path={"/home"} component={Home} />
-      <Route path={"/user"} component={User} />
-      <Route path={"/post/:id"} component={Post} />
-      <Route path={"/"} component={Welcome} />
-    </Switch> */}
-    <Route path={"/"} component={Welcome} exact />
-    <Route
-      path={"/render"}
-      render={(props) => {
-        console.log(props);
-        return <Redirect to="/" />;
-      }}
-    />
-    <Route
-      path={"/children"}
-      children={(props) => {
-        console.log(props);
-        return <div>sth XXXX</div>;
-      }}
-    />
-    <Route path={"/home"} component={Home} />
-    <Route path={"/user"} component={User} />
-    <Route path={"/post/:id"} component={Post} />
+    <Link to="/post/12/baiyan">Post</Link>
+    <Link to="/app">App</Link>
+    <Route path="/post/:id/:title" component={Post} />
+    <App />
   </Router>,
   document.getElementById("root")
 );

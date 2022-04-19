@@ -23,21 +23,29 @@ class Route extends React.Component {
             history,
             location,
           };
+          let element;
           if (match) {
             props.match = match;
             if (children) {
-              return children(props);
+              element = children(props);
             } else if (Component) {
-              return <Component {...props} />;
+              element = <Component {...props} />;
             } else if (render) {
-              return render(props);
+              element = render(props);
+            } else {
+              element = null;
             }
-            return null;
+          } else if (children) {
+            element = children(props);
+          } else {
+            element = null;
           }
-          if (children) {
-            return children(props);
-          }
-          return null;
+          // ! tips: 这种写法是在每次路由渲染时，更新一下RouterContext.Provider的value
+          return (
+            <RouterContext.Provider value={props}>
+              {element}
+            </RouterContext.Provider>
+          );
         }}
       </RouterContext.Consumer>
     );
