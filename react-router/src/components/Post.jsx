@@ -1,10 +1,7 @@
 const Post = (props) => {
-  console.log(props);
   return (
     <div>
       <div>Post</div>
-      <div> id: {props.match.params.id}</div>
-      <div>title: {props.location.state.title}</div>
     </div>
   );
 };

@@ -1,45 +1,42 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  HashRouter as Router,
-  Route,
-  Link,
-  useHistory,
-  useLocation,
-  useParams,
-  useRouteMatch,
-} from "./libs/react-router-dom";
+import { HashRouter as Router, Route } from "./libs/react-router-dom";
 
-const App = () => {
-  const match = useRouteMatch({ path: "/app" });
-  console.log("APP match", match);
-  return match ? <div>App</div> : <div>Not Found</div>;
+// import Post from "./components/Post";
+// import User from "./components/User";
+
+// React.lazy的实现
+const lazy = (load) => {
+  return class extends React.Component {
+    state = {
+      Component: null,
+    };
+    componentDidMount() {
+      // dynamic import 会返回 {default} || {xModule, yModule} ,取决于如何export
+      load().then((res) => {
+        this.setState({
+          Component: res.default || res,
+        });
+      });
+    }
+    render() {
+      const { Component } = this.state;
+      return Component ? <Component /> : null;
+    }
+  };
 };
 
-const Post = () => {
-  const params = useParams();
-  console.log("params", params);
-  const location = useLocation();
-  console.log("location", location);
-  const history = useHistory();
-  console.log("history", history);
-  const match = useRouteMatch();
-  console.log("match", match);
-  return (
-    <div>
-      <div>Post</div>
-      <div> id: {params.id}</div>
-      <div>title: {params.title}</div>
-    </div>
-  );
-};
+const Post = lazy(() => import("./components/Post"));
+const User = lazy(() => import("./components/User"));
 
 ReactDOM.render(
   <Router>
-    <Link to="/post/12/baiyan">Post</Link>
-    <Link to="/app">App</Link>
-    <Route path="/post/:id/:title" component={Post} />
-    <App />
+    <React.Suspense fallback={<div>loading...</div>}>
+      <div>
+        <Route path="/post/:id/:title" component={Post} />
+        <Route path="/" component={User} />
+      </div>
+    </React.Suspense>
   </Router>,
   document.getElementById("root")
 );

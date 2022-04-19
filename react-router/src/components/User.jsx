@@ -8,9 +8,10 @@ const User = (props) => {
   };
   return (
     <div>
-      <button onClick={goBack}>User goBack</button>
+      {/* <button onClick={goBack}>User goBack</button>
       <button onClick={() => push("/home")}>To Home</button>
-      <button onClick={() => push("/")}>To Welcome</button>
+      <button onClick={() => push("/")}>To Welcome</button> */}
+      User
     </div>
   );
 };
