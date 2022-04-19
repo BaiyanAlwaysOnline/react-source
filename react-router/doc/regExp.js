@@ -22,16 +22,23 @@
 
 /*========== 分割线 ========== */
 
-const { pathToRegexp } = require("path-to-regexp");
+// const { pathToRegexp } = require("path-to-regexp");
 
-const keys = [];
-const reg = pathToRegexp("/", keys, { end: false });
-const resultKeys = keys.map((k) => k.name);
-console.log(reg, resultKeys);
-const match = "/post".match(reg);
-console.log(match);
-const params = resultKeys.reduce((prev, curr, index) => {
-  prev[curr] = match[index + 1];
-  return prev;
-}, {});
-console.log(params);
+// const keys = [];
+// const reg = pathToRegexp("/path/:id", keys, { end: false });
+// const resultKeys = keys.map((k) => k.name);
+// console.log(reg, resultKeys);
+// const match = "/path/1".match(reg);
+// console.log(match);
+// const params = resultKeys.reduce((prev, curr, index) => {
+//   prev[curr] = match[index + 1];
+//   return prev;
+// }, {});
+// console.log(params);
+
+const reg1 = /\/path\/([^\/]+?)(?=[\/#\?]|[]|$)/;
+const reg2 = /^\/path(?:\/(.+?))(?:[\/#\?](?=[]|$))?(?=[\/#\?]|[]|$)/i;
+const m1 = reg1.exec("/path/121/3/22");
+const m2 = reg2.exec("/path/121/3/22");
+console.log(m1);
+console.log(m2);

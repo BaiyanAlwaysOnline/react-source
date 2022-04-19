@@ -1,6 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { HashRouter as Router, Route, Link } from "./libs/react-router-dom";
+import {
+  HashRouter as Router,
+  Route,
+  Link,
+  Switch,
+} from "./libs/react-router-dom";
 import Welcome from "./components/Welcome";
 import Home from "./components/Home";
 import User from "./components/User";
@@ -25,10 +30,12 @@ ReactDOM.render(
         </Link>
       </li>
     </ul>
-    <Route path={"/"} component={Welcome} />
-    <Route path={"/home"} component={Home} />
-    <Route path={"/user"} component={User} />
-    <Route path={"/post/:id"} component={Post} />
+    <Switch>
+      <Route path={"/home"} component={Home} />
+      <Route path={"/user"} component={User} />
+      <Route path={"/post/:id"} component={Post} />
+      <Route path={"/"} component={Welcome} />
+    </Switch>
   </Router>,
   document.getElementById("root")
 );

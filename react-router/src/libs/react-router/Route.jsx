@@ -9,24 +9,20 @@ class Route extends React.Component {
         {(ctx) => {
           const { history, location } = ctx;
           const { pathname } = location;
-          const { path, component: Component, ...restProps } = this.props;
-          const { keys, regexp } = matchPath(path, restProps);
-          const match = regexp.exec(pathname);
+          const {
+            path,
+            component: Component,
+            computedMatch,
+            ...restProps
+          } = this.props;
+          console.log("Route render", computedMatch);
+          const match = computedMatch || matchPath(path, pathname, restProps);
           const props = {
             history,
             location,
           };
           if (match) {
-            const [url, ...params] = match;
-            props.match = {
-              isExact: url === pathname,
-              url,
-              path,
-              params: keys.reduce((prev, k, index) => {
-                prev[k] = params[index];
-                return prev;
-              }, {}),
-            };
+            props.match = match;
             return <Component {...props} />;
           }
           return null;

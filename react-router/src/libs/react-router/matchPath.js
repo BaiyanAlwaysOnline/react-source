@@ -9,7 +9,27 @@ const compilePath = (path, options) => {
   };
 };
 
-export default function matchPath(path, options = { exact: false }) {
+/**
+ *
+ * @param {*} path Route的path属性 /post/:id
+ * @param {*} pathname  真实路径 /post/1
+ * @param {*} options
+ * @returns
+ */
+export default function matchPath(path, pathname, options = { exact: false }) {
   const { keys, regexp } = compilePath(path, options);
-  return { keys, regexp };
+  const match = regexp.exec(pathname);
+  if (match) {
+    const [url, ...params] = match;
+    return {
+      isExact: url === pathname,
+      url,
+      path,
+      params: keys.reduce((prev, k, index) => {
+        prev[k] = params[index];
+        return prev;
+      }, {}),
+    };
+  }
+  return null;
 }
