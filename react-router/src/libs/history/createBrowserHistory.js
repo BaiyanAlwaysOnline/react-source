@@ -17,6 +17,10 @@ function createBrowserHistory() {
   };
 
   const push = (pathname, state) => {
+    if (typeof path === "object") {
+      state = path.state;
+      path = path.pathname;
+    }
     globalHistory.pushState(state, null, pathname);
     const action = "PUSH";
     const location = {

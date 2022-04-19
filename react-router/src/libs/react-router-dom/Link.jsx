@@ -10,11 +10,7 @@ export default function Link(props) {
       {...props}
       onClick={(e) => {
         e.preventDefault();
-        if (typeof props.to === "string") {
-          history.push(props.to);
-        } else {
-          history.push(props.to.pathname, props.to.state);
-        }
+        history.push(props.to);
       }}
     >
       {props.children}

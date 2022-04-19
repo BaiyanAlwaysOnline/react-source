@@ -12,6 +12,8 @@ class Route extends React.Component {
           const {
             path,
             component: Component,
+            render,
+            children,
             computedMatch,
             ...restProps
           } = this.props;
@@ -23,7 +25,17 @@ class Route extends React.Component {
           };
           if (match) {
             props.match = match;
-            return <Component {...props} />;
+            if (children) {
+              return children(props);
+            } else if (Component) {
+              return <Component {...props} />;
+            } else if (render) {
+              return render(props);
+            }
+            return null;
+          }
+          if (children) {
+            return children(props);
           }
           return null;
         }}

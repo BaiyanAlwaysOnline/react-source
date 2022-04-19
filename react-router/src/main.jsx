@@ -5,7 +5,10 @@ import {
   Route,
   Link,
   Switch,
-} from "./libs/react-router-dom";
+  NavLink,
+  Redirect,
+  Prompt,
+} from "react-router-dom";
 import Welcome from "./components/Welcome";
 import Home from "./components/Home";
 import User from "./components/User";
@@ -15,27 +18,53 @@ ReactDOM.render(
   <Router>
     <ul>
       <li>
-        <Link to="/">Welcome</Link>
+        <NavLink exact activeStyle={{ color: "red" }} to="/">
+          Welcome
+        </NavLink>
       </li>
       <li>
-        <Link to="/home">Home</Link>
+        <NavLink to="/home">Home</NavLink>
       </li>
       <li>
-        <Link to="/user">User</Link>
+        <NavLink to="/user">User</NavLink>
       </li>
       <li>
-        {/* <Link to="/post/123">post</Link> */}
-        <Link to={{ pathname: "/post/1", state: { title: "Post1的标题" } }}>
+        <NavLink to="/render">Render</NavLink>
+      </li>
+      <li>
+        <NavLink to="/children">children</NavLink>
+      </li>
+      <li>
+        {/* <NavLink to="/post/123">post</NavLink> */}
+        <NavLink to={{ pathname: "/post/1", state: { title: "Post1的标题" } }}>
           post
-        </Link>
+        </NavLink>
       </li>
     </ul>
-    <Switch>
+    {/* <Switch>
       <Route path={"/home"} component={Home} />
       <Route path={"/user"} component={User} />
       <Route path={"/post/:id"} component={Post} />
       <Route path={"/"} component={Welcome} />
-    </Switch>
+    </Switch> */}
+    <Route path={"/"} component={Welcome} exact />
+    <Route
+      path={"/render"}
+      render={(props) => {
+        console.log(props);
+        return <Redirect to="/" />;
+      }}
+    />
+    <Route
+      path={"/children"}
+      children={(props) => {
+        console.log(props);
+        return <div>sth XXXX</div>;
+      }}
+    />
+    <Route path={"/home"} component={Home} />
+    <Route path={"/user"} component={User} />
+    <Route path={"/post/:id"} component={Post} />
   </Router>,
   document.getElementById("root")
 );

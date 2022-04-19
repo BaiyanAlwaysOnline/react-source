@@ -23,6 +23,10 @@ function createHashHistory() {
   };
 
   const push = (path, nextState) => {
+    if (typeof path === "object") {
+      nextState = path.state;
+      path = path.pathname;
+    }
     state = nextState;
     window.location.hash = path;
   };
