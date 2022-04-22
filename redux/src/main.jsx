@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createStore } from "./redux";
+import Counter1 from "./components/Counter1.jsx";
 
-// ReactDOM.createRoot(document.getElementById("root")).render(<div>123</div>);
+ReactDOM.createRoot(document.getElementById("root")).render(<Counter1 />);

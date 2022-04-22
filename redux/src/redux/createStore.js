@@ -3,7 +3,7 @@
 /**
  * redux是一个js库，可以脱离react使用
  * getState获取最新state
- * dispatch action => reducer => newstate =>subsrcibe()
+ * dispatch action => reducer => newstate => subsrcibe()
  */
 function createStore(reducer) {
   let state;
@@ -20,7 +20,7 @@ function createStore(reducer) {
     return () => (listeners = listeners.filter((l) => l !== listener));
   };
   // 初始化state，得到默认state
-  dispatch({ type: "@REDUX/INIT" });
+  dispatch({ type: "@redux/INIT" });
   return {
     getState,
     dispatch,
