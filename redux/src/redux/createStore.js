@@ -5,7 +5,11 @@
  * getState获取最新state
  * dispatch action => reducer => newstate => subsrcibe()
  */
-function createStore(reducer) {
+function createStore(reducer, enhancer) {
+  // 如果传了enhancer，就是要enhancer去创建store
+  if (enhancer) {
+    return enhancer(createStore)(reducer);
+  }
   let state;
   let listeners = [];
   const getState = () => state;

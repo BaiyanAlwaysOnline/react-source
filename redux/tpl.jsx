@@ -6,7 +6,6 @@ const MINUS = "MINUS";
 const SET = "SET";
 
 const reducer1 = (state = { num: 0 }, action) => {
-  debugger;
   switch (action.type) {
     case ADD:
       return { num: state.num + 1 };
@@ -20,7 +19,6 @@ const reducer1 = (state = { num: 0 }, action) => {
 };
 
 const reducer2 = (state = { name: "baiyan" }, action) => {
-  debugger;
   switch (action.type) {
     case SET:
       return action.payload;
@@ -52,14 +50,12 @@ const actionCreators = {
     payload,
   }),
 };
-// binded
+// bound
 const boundAdd = bindActionCreators(add, store.dispatch);
 const boundMinus = bindActionCreators(minus, store.dispatch);
 const boundActions = bindActionCreators(actionCreators, store.dispatch);
 
-const num = { num: Math.random() };
-
-class Counter1 extends React.Component {
+class Counter extends React.Component {
   state = {
     num: store.getState().reducer1.num,
   };
@@ -76,15 +72,12 @@ class Counter1 extends React.Component {
     return (
       <div>
         <p>{this.state.num}</p>
-        {/* <button onClick={() => store.dispatch({ type: ADD })}>+</button>
-        <button onClick={() => store.dispatch({ type: MINUS })}>-</button> */}
-        {/* <button onClick={() => boundAdd()}>+</button>
-        <button onClick={() => boundMinus()}>-</button> */}
+        <button onClick={() => boundMinus()}>-</button>
         <button onClick={() => boundActions.add()}>+</button>
         <button onClick={() => boundActions.minus()}>-</button>
         <button
           onClick={() => {
-            boundActions.set(num);
+            boundActions.set({ num: Math.random() });
           }}
         >
           set
@@ -94,4 +87,4 @@ class Counter1 extends React.Component {
   }
 }
 
-export default Counter1;
+export default Counter;
