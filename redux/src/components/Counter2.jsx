@@ -11,13 +11,13 @@ import * as actionTypes from "../store/action-types.js";
 // });
 const actionCreators = {
   add: () => ({
-    type: actionTypes.COUNTER1_ADD,
+    type: actionTypes.COUNTER2_ADD,
   }),
   minus: () => ({
-    type: actionTypes.COUNTER1_MINUS,
+    type: actionTypes.COUNTER2_MINUS,
   }),
   set: (payload) => ({
-    type: actionTypes.COUNTER1_SET,
+    type: actionTypes.COUNTER2_SET,
     payload,
   }),
 };
@@ -26,13 +26,13 @@ const actionCreators = {
 // const boundMinus = bindActionCreators(minus, store.dispatch);
 const boundActions = bindActionCreators(actionCreators, store.dispatch);
 
-class Counter1 extends React.Component {
+class Counter2 extends React.Component {
   state = {
-    num: store.getState().counter1.num,
+    num: store.getState().counter2.num,
   };
   componentDidMount() {
     this.unsubscribe = store.subscribe(() => {
-      this.setState({ num: store.getState().counter1.num });
+      this.setState({ num: store.getState().counter2.num });
     });
   }
 
@@ -61,4 +61,4 @@ class Counter1 extends React.Component {
   }
 }
 
-export default Counter1;
+export default Counter2;

@@ -1,0 +1,3 @@
+export const COUNTER1_ADD = "COUNTER1_ADD";
+export const COUNTER1_MINUS = " COUNTER1_MINUS";
+export const COUNTER1_SET = " COUNTER1_SET";
