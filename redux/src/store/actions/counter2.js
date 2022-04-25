@@ -1,3 +1,14 @@
-export const COUNTER2_ADD = "COUNTER2_ADD";
-export const COUNTER2_MINUS = " COUNTER2_MINUS";
-export const COUNTER2_SET = " COUNTER2_SET";
+import * as actionTypes from "../action-types.js";
+const actionCreators = {
+  add: () => ({
+    type: actionTypes.COUNTER2_ADD,
+  }),
+  minus: () => ({
+    type: actionTypes.COUNTER2_MINUS,
+  }),
+  set: (payload) => ({
+    type: actionTypes.COUNTER2_SET,
+    payload,
+  }),
+};
+export default actionCreators;

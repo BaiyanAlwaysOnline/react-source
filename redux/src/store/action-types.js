@@ -1,2 +1,7 @@
-export * from "./actions/counter1.js";
-export * from "./actions/counter2.js";
+export const COUNTER1_ADD = "COUNTER1_ADD";
+export const COUNTER1_MINUS = " COUNTER1_MINUS";
+export const COUNTER1_SET = " COUNTER1_SET";
+
+export const COUNTER2_ADD = "COUNTER2_ADD";
+export const COUNTER2_MINUS = " COUNTER2_MINUS";
+export const COUNTER2_SET = " COUNTER2_SET";

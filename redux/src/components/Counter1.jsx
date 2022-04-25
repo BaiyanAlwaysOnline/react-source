@@ -1,30 +1,9 @@
 import React from "react";
 import { bindActionCreators } from "../redux";
 import store from "../store/index";
-import * as actionTypes from "../store/action-types.js";
-// actionCreator
-// const add = () => ({
-//   type: ADD,
-// });
-// const minus = () => ({
-//   type: MINUS,
-// });
-const actionCreators = {
-  add: () => ({
-    type: actionTypes.COUNTER1_ADD,
-  }),
-  minus: () => ({
-    type: actionTypes.COUNTER1_MINUS,
-  }),
-  set: (payload) => ({
-    type: actionTypes.COUNTER1_SET,
-    payload,
-  }),
-};
-// binded
-// const boundAdd = bindActionCreators(add, store.dispatch);
-// const boundMinus = bindActionCreators(minus, store.dispatch);
-const boundActions = bindActionCreators(actionCreators, store.dispatch);
+import actions from "../store/actions/counter1.js";
+
+const boundActions = bindActionCreators(actions, store.dispatch);
 
 class Counter1 extends React.Component {
   state = {

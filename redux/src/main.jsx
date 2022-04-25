@@ -1,13 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+
 import Counter1 from "./components/Counter1.jsx";
 import Counter2 from "./components/Counter2.jsx";
 import ApplyMiddlewareDemo from "./components/ApplyMiddlewareDemo.jsx";
+import ReactRedux from "./components/ReactRedux.jsx";
+import store from "./store/index";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <div>
+  <Provider store={store}>
     <Counter1 />
     <Counter2 />
-    <ApplyMiddlewareDemo />
-  </div>
+    {/* <ApplyMiddlewareDemo /> */}
+    <ReactRedux />
+  </Provider>
 );
