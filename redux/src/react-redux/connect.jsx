@@ -40,6 +40,7 @@ const connect = (mapStateToProps, mapDispatchToProps) => (OldComponent) => (
   // 监听，当store中的数据发生变化，触发视图更新
   useLayoutEffect(() => {
     const unsubscribe = subscribe(() => {
+      // ! react-redux会做优化，如果store中的某个namespace中的state没有发生变化，则不会触发对应connect组件的更新
       forceUpdate();
     });
     return unsubscribe;
