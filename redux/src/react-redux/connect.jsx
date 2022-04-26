@@ -5,6 +5,7 @@ import ReactReduxContext from "./ReactReduxContext.js";
 import { bindActionCreators } from "../redux";
 import { useReducer } from "react";
 import { useLayoutEffect } from "react";
+import { useRef } from "react";
 
 const connect = (mapStateToProps, mapDispatchToProps) => (OldComponent) => (
   props
@@ -14,7 +15,7 @@ const connect = (mapStateToProps, mapDispatchToProps) => (OldComponent) => (
   } = useContext(ReactReduxContext);
 
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
-
+  const prevStateFromStore = useRef(null);
   // 原始的state
   const prevState = getState();
   // mappedState
@@ -39,12 +40,23 @@ const connect = (mapStateToProps, mapDispatchToProps) => (OldComponent) => (
 
   // 监听，当store中的数据发生变化，触发视图更新
   useLayoutEffect(() => {
+    if (prevStateFromStore.current === null) {
+      prevStateFromStore.current = mapStateToProps(prevState, props);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
     const unsubscribe = subscribe(() => {
       // ! react-redux会做优化，如果store中的某个namespace中的state没有发生变化，则不会触发对应connect组件的更新
-      forceUpdate();
+      // ? mapStateToProps就是个select函数，猜测 reselector库就是类似原理
+      const nextState = mapStateToProps(getState(), props);
+      if (prevStateFromStore.current !== nextState) {
+        forceUpdate();
+        prevStateFromStore.current = mapStateToProps(getState(), props);
+      }
     });
     return unsubscribe;
-  }, [subscribe, forceUpdate]);
+  }, [subscribe, forceUpdate, getState, props, mapStateToProps]);
 
   return <OldComponent {...props} {...mappedState} {...mappedDispatch} />;
 };
