@@ -1,6 +1,6 @@
 import React from "react";
 import actions from "../store/actions/counter1.js";
-import { connect } from "react-redux";
+import { connect } from "../react-redux";
 
 class ReactRedux extends React.Component {
   render() {
