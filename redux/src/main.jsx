@@ -15,9 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     {/* <Counter1 /> */}
     {/* <Counter2 /> */}
-    {/* <ApplyMiddlewareDemo /> */}
-    <ReactRedux />
-    <ReactRedux1 />
+    <ApplyMiddlewareDemo />
+    {/* <ReactRedux /> */}
+    {/* <ReactRedux1 /> */}
     {/* <Counter3 /> */}
   </Provider>
 );
