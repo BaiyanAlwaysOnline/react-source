@@ -1,5 +1,5 @@
 import React from "react";
-import ReactReduxContext from "./ReactReduxContext";
+import ReactReduxContext from "../ReactReduxContext";
 
 const Provider = ({ store, children }) => {
   return (
