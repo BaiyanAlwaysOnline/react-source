@@ -1,11 +1,11 @@
 import React from "react";
-import actions from "../store/actions/counter1.js";
+import actions from "../store/actions/counter2.js";
 import { useSelector, useDispatch } from "../react-redux";
 
-function Counter3() {
-  const state = useSelector((state) => state.counter1);
+function ReactReduxHooks2() {
+  const state = useSelector((state) => state.counter2);
   const dispatch = useDispatch();
-  console.log("Counter3 render");
+  console.log("ReactReduxHooks2 render");
   return (
     <div>
       <p>{state.num}</p>
@@ -22,4 +22,4 @@ function Counter3() {
   );
 }
 
-export default Counter3;
+export default ReactReduxHooks2;
