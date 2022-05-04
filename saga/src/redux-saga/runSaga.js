@@ -25,7 +25,7 @@ function runSaga(env, saga, ctn) {
         switch (effect.type) {
           case effectTypes.TAKE:
             // once订阅，阻塞流程
-            // ? generate函数阻塞流程，可以恢复，是怎么做到的，背后原理是什么？
+            // ? generate函数阻塞流程，可以恢复，是怎么做到的，背后原理是什么？ => 实现generate函数后发现，其实就是个switch case
             channel.take(effect.actionType, next);
             break;
           case effectTypes.PUT:
