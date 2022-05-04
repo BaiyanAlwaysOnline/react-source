@@ -8,6 +8,7 @@ function Counter() {
     <div>
       <p>Counter: {num}</p>
       <button onClick={() => dispatch({ type: "COUNTER_ADD" })}>+</button>
+      <button onClick={() => dispatch({ type: "CANCEL_ADD" })}>cancel</button>
       <button onClick={() => dispatch({ type: "ASYNC_COUNTER_ADD" })}>
         async +
       </button>
