@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import dva, { connect } from "./dva";
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -37,6 +37,36 @@ app.model({
   },
 });
 
+function App() {
+  const [count, setCount] = useState(0);
+
+  useLayoutEffect(() => {
+    console.log(`useLayoutEffect - count=${count}`);
+    // 耗时的操作
+    const pre = Date.now();
+    while (Date.now() - pre < 3000) {}
+
+    if (count === 0) {
+      debugger;
+      document.getElementById("count").style.width = "600px";
+      console.log(333);
+      console.log(333);
+      setCount(10 + Math.random() * 200);
+    } else {
+    }
+  }, [count]);
+
+  return (
+    <div
+      id="count"
+      style={{ border: "1px solid red" }}
+      onClick={() => setCount(0)}
+    >
+      {count}
+    </div>
+  );
+}
+
 function Counter(props) {
   return (
     <div>
@@ -70,10 +100,5 @@ function Counter1(props) {
 
 const ConnectedCounter1 = connect((state) => state.counter1)(Counter1);
 
-app.router(() => (
-  <div>
-    <ConnectedCounter />
-    <ConnectedCounter1 />
-  </div>
-));
+app.router(() => <App />);
 app.start("#root");

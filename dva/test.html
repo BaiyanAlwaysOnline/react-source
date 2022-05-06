@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="text">准备中</div>
+    <div id="container"></div>
+  </body>
+  <script>
+    // 得出一个结论：微任务和浏览器绘制应该是交替执行的
+    const text = document.getElementById("text");
+    const container = document.getElementById("container");
+    const frg = document.createDocumentFragment();
+    for (let i = 0; i < 10000; i++) {
+      const li = document.createElement("li");
+      li.innerHTML = i;
+      frg.appendChild(li);
+    }
+    container.appendChild(frg);
+
+    Promise.resolve().then(function then() {
+      console.log("微任务1开始执行");
+      const pre = Date.now();
+      text.innerText = "微任务1开始执行";
+      const frg = document.createDocumentFragment();
+      debugger;
+      for (let i = 0; i < 1000; i++) {
+        const li = document.createElement("li");
+        li.innerHTML = i;
+        frg.appendChild(li);
+      }
+      container.appendChild(frg);
+      while (Date.now() - pre < 1000) {}
+    });
+
+    Promise.resolve().then(function then() {
+      console.log("微任务2开始执行");
+      const pre = Date.now();
+      text.innerText = "微任务2开始执行";
+      const frg = document.createDocumentFragment();
+      for (let i = 0; i < 1000; i++) {
+        const li = document.createElement("li");
+        li.innerHTML = i;
+        frg.appendChild(li);
+      }
+      container.appendChild(frg);
+      while (Date.now() - pre < 1000) {}
+    });
+
+    setTimeout(() => {
+      console.log("宏任务开始执行");
+    });
+  </script>
+</html>
