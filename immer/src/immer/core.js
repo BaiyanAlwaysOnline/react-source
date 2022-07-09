@@ -5,7 +5,7 @@ export const INTERNAL = Symbol("internal");
 /**
  *
  * @param {*} baseState 原始状态 不可变
- * @param {*} producerß 处理器
+ * @param {*} producer 处理器
  */
 export function produce(baseState, producer) {
   const proxyState = toProxy(baseState);
