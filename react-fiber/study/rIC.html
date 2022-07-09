@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script>
+
+    function sleep(delay) {
+        let begin = Date.now();
+        while (Date.now() - begin < delay ){}
+    }
+
+
+    let task = [
+        {
+            id: 1,
+            value: () => {
+                console.log('task1 start')
+                sleep(20);
+                console.log('task1 end')
+            }
+        },
+        {
+            id: 2,
+            value: () => {
+                console.log('task2 start')
+                console.log('task2 end')
+            }
+        },
+        {
+            id: 3,
+            value: () => {
+                console.log('task3 start')
+                console.log('task3 end')
+            }
+        },
+    ]
+
+    // function reconciliation(deadline) {
+    //
+    // }
+
+    function workLoop(deadline) {
+        console.log(deadline.timeRemaining())
+        while ((deadline.timeout || deadline.timeRemaining() > 1) && task.length > 0) {
+            performUnitWork()
+        }
+        // 如果还有剩余任务，等下一次有时间再执行 - 时间切片
+        if (task.length)  {
+            console.log('当前帧没有时间了，还有任务没有完成')
+            window.requestIdleCallback(workLoop, { timeout: 1000 })
+        };
+    }
+
+    function performUnitWork() {
+        task.shift().value()
+    }
+
+    window.requestIdleCallback(workLoop, { timeout: 1000 })
+
+</script>
+</body>
+</html>
