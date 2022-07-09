@@ -27,6 +27,8 @@ export interface IFiber {
   firstEffect: IFiber | null; // => 指向第一个有副作用的【子】fiber节点
   lastEffect: IFiber | null; // => 指向最后一个有副作用的【子】fiber节点
   nextEffect: IFiber | null; // => effectList 之间用 nextEffect 链接
+  // 已经渲染的fiber树
+  alternate?: IFiber | null;
 }
 
 function render(element: ReactElement, container: HTMLElement) {
@@ -41,6 +43,7 @@ function render(element: ReactElement, container: HTMLElement) {
     firstEffect: null, // => 指向第一个有副作用的【子】fiber节点
     lastEffect: null, // => 指向最后一个有副作用的【子】fiber节点
     nextEffect: null, // => effectList 之间用 nextEffect 链接
+    alternate: null,
   };
 
   schedule(rootFiber);
