@@ -6,7 +6,6 @@ import {
   TAG_ROOT,
   TAG_TEXT,
 } from "../src/constants";
-import { HTMLAttributes, ReactElement } from "react";
 
 /**
  * 从根节点开始
