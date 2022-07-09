@@ -248,7 +248,7 @@ function reconcileChildren(currentFiber: IFiber, newChildren: any[]) {
   }
 }
 
-// 一加载就开始执行 workLoop
+// 一加载就开始执行 workLoop  源码中React预留的初始时间是5ms
 window.requestIdleCallback(workLoop, { timeout: 500 });
 
 export default schedule;
