@@ -1,12 +1,13 @@
 import { ReactElement } from "react";
 import { EFFECT_TAG_TYPE, TAG_ROOT } from "../src/constants";
 import schedule from "./schedule";
+import React from "./react";
 
 export interface IFiber {
   // 每个fiber都会有一个tag，标识此元素类型；
   tag: Symbol;
   // 如果这个元素是一个原生节点的话，stateNode指向真实DOM元素
-  stateNode: Node | null;
+  stateNode: Node | null | typeof React.Component;
   // 属性
   props: {
     // children存储的是vdom，会根据每个vdom创建对应的fiber节点
@@ -14,7 +15,7 @@ export interface IFiber {
     // 文本节点
     text?: string;
   };
-  type?: string;
+  type?: string | typeof React.Component;
   // 父指针
   return?: IFiber;
   // 子指针
@@ -29,6 +30,7 @@ export interface IFiber {
   nextEffect: IFiber | null; // => effectList 之间用 nextEffect 链接
   // 已经渲染的fiber树
   alternate?: IFiber | null;
+  updateQueue: any;
 }
 
 function render(element: ReactElement, container: HTMLElement) {
@@ -44,6 +46,7 @@ function render(element: ReactElement, container: HTMLElement) {
     lastEffect: null, // => 指向最后一个有副作用的【子】fiber节点
     nextEffect: null, // => effectList 之间用 nextEffect 链接
     alternate: null,
+    updateQueue: {},
   };
 
   schedule(rootFiber);
