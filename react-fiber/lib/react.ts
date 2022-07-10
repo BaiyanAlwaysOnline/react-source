@@ -1,8 +1,12 @@
 import { ELEMENT_TEXT } from "../src/constants";
 import { ReactElement } from "react";
-import { Update } from "./update";
-import schedule from "./schedule";
-import scheduleRoot from "./schedule";
+import { Update, UpdateQueue } from "./update";
+import scheduleRoot, {
+  hookIndex,
+  useReducer,
+  useState,
+  workInProgressFiber,
+} from "./schedule";
 
 function createElement(type: string, props: any, ...children: ReactElement[]) {
   cleanProperty(props);
@@ -56,6 +60,8 @@ function cleanProperty(props: any) {
 let react = {
   createElement,
   Component,
+  useReducer,
+  useState,
 };
 
 export default react;

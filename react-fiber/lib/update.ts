@@ -22,7 +22,7 @@ export class UpdateQueue {
       this.lastUpdate = update;
     }
   }
-  forceUpdate(state) {
+  forceUpdate(state: any) {
     let currentUpdate = this.firstUpdate;
     while (currentUpdate) {
       let nextState =

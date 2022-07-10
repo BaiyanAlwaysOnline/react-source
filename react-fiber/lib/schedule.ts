@@ -31,8 +31,11 @@ let currentRoot: null | IFiber = null;
 let nextUnitOfWork: undefined | IFiber = undefined;
 // 需要删除的节点集合
 let deletions: IFiber[] = [];
+// 正在工作中的fiber
+let workInProgressFiber: null | IFiber = null;
+let hookIndex = 0;
 
-function scheduleRoot(rootFiber: IFiber) {
+function scheduleRoot(rootFiber?: IFiber) {
   /**
    * 优化点：双缓存树，第三次更新开始，不再创建fiber树（频繁创建对象消耗性能），而是复用上上次的fiber树
    */
@@ -249,6 +252,10 @@ function updateClassComponent(currentFiber: IFiber) {
 }
 
 function updateFunctionalComponent(currentFiber: IFiber) {
+  // 渲染函数组件时，挂载当前fiber到workInProgressFiber上
+  workInProgressFiber = currentFiber;
+  workInProgressFiber.hooks = [];
+  hookIndex = 0;
   const newChildren = [currentFiber?.type(currentFiber.props)];
   reconcileChildren(currentFiber, newChildren);
 }
@@ -417,6 +424,40 @@ function reconcileChildren(currentFiber: IFiber, newChildren: any[]) {
 
     newChildIndex++;
   }
+}
+
+export function useReducer(reducer: Function | null, initialState: any) {
+  let currentHook =
+    workInProgressFiber?.alternate &&
+    workInProgressFiber.alternate.hooks &&
+    workInProgressFiber.alternate.hooks[hookIndex];
+
+  if (currentHook) {
+    // 非首次渲染
+    currentHook.state = currentHook.updateQueue.forceUpdate(currentHook.state);
+  } else {
+    currentHook = {
+      state: initialState,
+      updateQueue: new UpdateQueue(),
+    };
+  }
+
+  function dispatch(action: any) {
+    let payload =
+      typeof reducer === "function"
+        ? reducer(currentHook.state, action)
+        : action;
+    currentHook.updateQueue.enqueueUpdate(new Update(payload));
+    scheduleRoot();
+  }
+
+  workInProgressFiber.hooks[hookIndex++] = currentHook;
+
+  return [currentHook.state, dispatch];
+}
+
+export function useState(initialState: any) {
+  return useReducer(null, initialState);
 }
 
 // 一加载就开始执行 workLoop  源码中React预留的初始时间是5ms
