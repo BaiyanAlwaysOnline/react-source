@@ -15,7 +15,7 @@ export interface IFiber {
     // 文本节点
     text?: string;
   };
-  type?: string | typeof React.Component;
+  type?: string | typeof React.Component | Function;
   // 父指针
   return?: IFiber;
   // 子指针

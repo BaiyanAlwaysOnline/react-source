@@ -4,6 +4,7 @@ import {
   ELEMENT_TEXT,
   PLACEMENT,
   TAG_CLASS,
+  TAG_FUNCTION_COMPONENT,
   TAG_HOST,
   TAG_ROOT,
   TAG_TEXT,
@@ -167,12 +168,17 @@ function performUnitOfWork(currentFiber: IFiber): IFiber | undefined {
 }
 
 function beginWork(currentFiber: IFiber) {
+  debugger;
+
   switch (currentFiber.tag) {
     case TAG_ROOT: // 根节点
       updateHostRoot(currentFiber);
       break;
     case TAG_CLASS: // 原生DOM节点
       updateClassComponent(currentFiber);
+      break;
+    case TAG_FUNCTION_COMPONENT: // 原生DOM节点
+      updateFunctionalComponent(currentFiber);
       break;
     case TAG_TEXT: // 文本节点
       updateHostText(currentFiber);
@@ -239,6 +245,11 @@ function updateClassComponent(currentFiber: IFiber) {
   let newElement = currentFiber.stateNode.render();
   const newChildren = [newElement];
   // diff
+  reconcileChildren(currentFiber, newChildren);
+}
+
+function updateFunctionalComponent(currentFiber: IFiber) {
+  const newChildren = [currentFiber?.type(currentFiber.props)];
   reconcileChildren(currentFiber, newChildren);
 }
 
@@ -332,6 +343,8 @@ function reconcileChildren(currentFiber: IFiber, newChildren: any[]) {
       newChild.type.isReactComponent
     ) {
       tag = TAG_CLASS;
+    } else if (newChild && typeof newChild.type === "function") {
+      tag = TAG_FUNCTION_COMPONENT;
     } else if (newChild && newChild.type === ELEMENT_TEXT) {
       tag = TAG_TEXT;
     } else if (newChild && typeof newChild.type === "string") {

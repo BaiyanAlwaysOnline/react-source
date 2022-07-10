@@ -1,5 +1,12 @@
+import React from "../lib/react";
+
 function FunctionComponent() {
-  return <div className="App">FunctionComponent</div>;
+  return (
+    <div id="counter">
+      <span>{0}</span>
+      <button>加一</button>
+    </div>
+  );
 }
 
 export default FunctionComponent;

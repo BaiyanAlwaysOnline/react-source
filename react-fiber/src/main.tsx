@@ -73,6 +73,7 @@ import ReactDOM from "../lib/react-dom";
 //
 // ReactDOM.render(element, document.getElementById("root")!);
 
-import ClassComponent from "./ClassComponent";
+// import ClassComponent from "./ClassComponent";
+import FunctionComponent from "./FunctionComponent";
 
-ReactDOM.render(<ClassComponent />, document.getElementById("root")!);
+ReactDOM.render(<FunctionComponent />, document.getElementById("root")!);
